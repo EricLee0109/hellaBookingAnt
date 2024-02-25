@@ -1,0 +1,33 @@
+.footer {
+  background: linear-gradient(to bottom, #163eb4, #00125a);
+  color: #fff;
+}
+.footer-wrap {
+  padding: 40px;
+}
+.footer-wrap .footer-item {
+  display: inline-block;
+  text-align: left;
+}
+.footer-wrap .footer-item h2 {
+  margin-bottom: 24px;
+  color: #fff;
+  font-size: 16px;
+}
+.footer-wrap .footer-item div {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.footer-wrap .footer-item div a {
+  color: rgba(255, 255, 255, 0.9);
+}
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 21px 0;
+  line-height: 22px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.6);
+}
+.footer-bottom a {
+  color: rgba(255, 255, 255, 0.6);
+}

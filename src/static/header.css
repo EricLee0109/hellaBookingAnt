@@ -1,0 +1,56 @@
+header {
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+header .nav {
+  max-width: 424px;
+  text-align: center;
+  margin: auto;
+}
+header .nav-title {
+  display: block;
+  padding-top: 22px;
+  border-top: 2px solid transparent;
+  transition: border 0.3s;
+  color: #fff;
+  cursor: pointer;
+}
+header .nav-title:hover {
+  border-top-color: #fff;
+}
+.header-tip-wrap .ant-tooltip-arrow {
+  border-bottom-color: rgba(1, 24, 116, 0.96);
+}
+.header-tip-wrap .ant-tooltip-inner {
+  background-color: rgba(1, 24, 116, 0.96);
+  box-shadow: 0 8px 16px #001b72;
+  padding: 0;
+  max-width: none;
+  overflow: hidden;
+}
+.header-tip-wrap .ant-tooltip-inner .tip-block {
+  display: flex;
+  align-items: center;
+  padding: 26px;
+  min-width: 296px;
+  transition: background 0.3s;
+  background: rgba(1, 24, 116, 0);
+}
+.header-tip-wrap .ant-tooltip-inner .tip-block .tip-img {
+  display: inline-block;
+}
+.header-tip-wrap .ant-tooltip-inner .tip-block .tip-content {
+  display: inline-block;
+  color: #fff;
+  margin-left: 16px;
+  line-height: 22px;
+}
+.header-tip-wrap .ant-tooltip-inner .tip-block .tip-content > div {
+  opacity: 0.65;
+  font-size: 12px;
+  line-height: 20px;
+}
+.header-tip-wrap .ant-tooltip-inner .tip-block:hover {
+  background-color: #112d93;
+}

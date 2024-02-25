@@ -3,6 +3,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/home/Home";
 import SearchPage from "./search/SearchPage";
+import "./static/style.js";
 
 function App() {
   return (
