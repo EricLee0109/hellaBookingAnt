@@ -15,6 +15,10 @@ export default defineConfig({
   //   ],
   // }),
 ],
+server: {
+  host: 'localhost',
+  port: 3000, // change this to your desired port
+},
 rules: [
   {
     test: /\.less$/i,

@@ -4,9 +4,17 @@ header {
   z-index: 10;
 }
 header .nav {
-  max-width: 424px;
+  max-width: full;
   text-align: center;
   margin: auto;
+}
+header .nav .card {
+  background: rgba(10, 30, 100);
+  backdrop-filter:  blur(4px);
+  width: 250;
+  margin-Top: auto;
+  margin-right: 5%;
+
 }
 header .nav-title {
   display: block;
@@ -19,6 +27,22 @@ header .nav-title {
 header .nav-title:hover {
   border-top-color: #fff;
 }
+header .blur-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.65);
+  filter: blur(4px);
+  z-index: -1;
+}
+
+.hide {
+  display: none;
+}
+
 .header-tip-wrap .ant-tooltip-arrow {
   border-bottom-color: rgba(1, 24, 116, 0.96);
 }

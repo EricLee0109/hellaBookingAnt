@@ -26,13 +26,13 @@ import {
 } from "antd";
 import Title from "antd/es/typography/Title";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Search from "../content/Search";
-import Plan from "../content/planSection/Plan";
 import Header from "../header/Header";
 import Banner from "../banner/Banner";
 import Footer from "../footer/Footer";
-import Testimonial from "../content/testimonial/Testimonial";
+import Tours from "../content/tour/Tours";
+import Locations from "../content/location/Locations";
 
 function Home() {
   const [visible, setVisible] = useState(true);
@@ -55,6 +55,7 @@ function Home() {
     setOpen(false);
   };
 
+  // 65de2e88d5a81dc266766fb6
   return (
     <div>
       <Header />
@@ -95,9 +96,12 @@ function Home() {
       </Drawer> */}
       {/** Flex only affect 2 attribute by width, height by maxWidth and maxHeight **/}
       {/* <Search /> */}
-      <Plan />
-      <Testimonial />
+      <Tours />
+      <Locations />
       <Footer key="footer" />
+      {/* <div id="detail">
+        <Outlet />
+      </div> */}
     </div>
   );
 }

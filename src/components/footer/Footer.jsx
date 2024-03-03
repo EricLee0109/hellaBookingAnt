@@ -53,7 +53,7 @@ function Footer() {
                 className="mobile-hide"
               >
                 <a
-                  href="https://weibo.com/p/1005056420205486"
+                  href="https://www.hella.com/hella-com/en/"
                   rel="noopener noreferrer"
                   target="_blank"
                   style={{
@@ -73,20 +73,12 @@ function Footer() {
                     marginRight: 11,
                   }}
                 >
-                  <a
-                    href="https://docs.alipay.com/policies/privacy/antfin"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
+                  <a href="" rel="noopener noreferrer" target="_blank">
                     hellaBookingTour@gmail.com
                   </a>
                 </span>
                 <span style={{ marginRight: 24 }} className="mobile-hide">
-                  <a
-                    href="https://render.alipay.com/p/f/fd-izto3cem/index.html"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
+                  <a href="" rel="noopener noreferrer" target="_blank">
                     Fb: Hella Booking Tour
                   </a>
                 </span>
