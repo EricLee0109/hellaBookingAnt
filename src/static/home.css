@@ -51,7 +51,8 @@ a:focus {
   max-width: 1248px;
 }
 .banner .logo {
-  background: url('../img/HellaBookingLogo.png') no-repeat;
+  /* background: url('../img/HellaBookingLogo.png') no-repeat; */
+  background: url('https://res.cloudinary.com/dtlvihfka/image/upload/v1709178491/ekmd80ee6du84b0nptld.png') no-repeat;
   background-size: contain;
   width: 127px;
   height: 110px;
