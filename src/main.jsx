@@ -25,7 +25,11 @@ const store = createStore({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <RequireAuth fallbackPath="/login">
+        <Home />
+      </RequireAuth>
+    ),
     errorElement: <ErrorPage />,
     // children: [
     //   //reder one more component in <Home> component with <Outlet> component
@@ -52,7 +56,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       }}
     >
       <AuthProvider store={store}>
-        <RouterProvider router={router} />
+        <RouterProvider router={router}>
+          <App />
+        </RouterProvider>
       </AuthProvider>
     </ConfigProvider>
   </React.StrictMode>

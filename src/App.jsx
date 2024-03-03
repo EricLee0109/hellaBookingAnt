@@ -17,7 +17,7 @@ import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
 
 function App() {
-  <Router basename="/login">
+  <Router>
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route

@@ -14,7 +14,7 @@ function Tours() {
   const [selectedTour, setSelectedTour] = useState(null);
   const { Meta } = Card;
   const TOURS_URL = "/tours";
-  const LOCATION_IN_TOUR_URL = "/locationInTours";
+  const LOCATION_IN_TOUR_URL = "/tours/locations";
   const joinedData = []; // Join the tour and locationInTours data
   const joinedLocationTour = []; // Join the locationInTour and joinedData
 
@@ -27,6 +27,7 @@ function Tours() {
         ]);
         setToursData(toursResponse.data.data);
         setLocationInToursData(locationInToursResponse.data.data);
+        console.log(locationInToursResponse.data, "locationInToursData");
       } catch (error) {
         console.log(error);
       }
