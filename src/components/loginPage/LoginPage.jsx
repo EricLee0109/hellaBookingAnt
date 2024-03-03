@@ -27,7 +27,7 @@ import {
   message,
   theme,
 } from "antd";
-import hellaLogo from "../../img/hellaBookingLogo.png";
+// import hellaLogo from "../../img/hellaBookingLogo.png";
 // import hellaVideo from "../../img/hellaBookingVideo.mp4";
 // import travelVideo from "../../img/travelEarth.mp4";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
