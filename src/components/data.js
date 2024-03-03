@@ -1,4 +1,4 @@
-import hellaLogo from '../img/hellaBookingLogo.png'
+// import hellaLogo from '../img/hellaBookingLogo.png'
 
 
 
