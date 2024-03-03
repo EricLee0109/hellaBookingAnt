@@ -73,7 +73,7 @@ const Page = () => {
       .post(accessType === "login" ? "/signIn" : "/signUp", values)
       .then((res) => {
         console.log("res: ", res);
-        if (res.status === 201) {
+        if (res.status === 200) {
           signIn({
             auth: {
               token: res.data.token.accessToken,
