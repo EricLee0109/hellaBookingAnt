@@ -11,6 +11,8 @@ import ErrorPage from "./components/errorPage/ErrorPage.jsx";
 import LoginPage from "./components/loginPage/LoginPage.jsx";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
+import TourDetail from "./components/tourDetail/tourDetail.jsx";
+import PaymentPage from "./payment/PaymentPage.jsx";
 // import { AuthProvider } from "react-auth-kit";
 
 // import './index.css'
@@ -25,11 +27,7 @@ const store = createStore({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <RequireAuth fallbackPath="/login">
-        <Home />
-      </RequireAuth>
-    ),
+    element: <Home />,
     errorElement: <ErrorPage />,
     // children: [
     //   //reder one more component in <Home> component with <Outlet> component
@@ -42,6 +40,22 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/tourDetail/:id",
+    element: <TourDetail />,
+  },
+  {
+    path: "/payment",
+    element: (
+      <RequireAuth>
+        <PaymentPage />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

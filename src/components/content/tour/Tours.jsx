@@ -6,6 +6,11 @@ import { OverPack } from "rc-scroll-anim";
 import { page1 } from "../../data";
 import { useEffect, useState } from "react";
 import axios from "../../../api/axios";
+import {
+  unstable_HistoryRouter,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 function Tours() {
   const [toursData, setToursData] = useState([]);
@@ -17,6 +22,7 @@ function Tours() {
   const LOCATION_IN_TOUR_URL = "/tours/locations";
   const joinedData = []; // Join the tour and locationInTours data
   const joinedLocationTour = []; // Join the locationInTour and joinedData
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +44,8 @@ function Tours() {
   const handleCardClick = (tour) => {
     setVisible(!visible);
     setSelectedTour(tour);
+    navigate(`/tourDetail/${tour.tourId}`);
+    console.log("tourID line 48: ", tour.tourId);
   };
 
   const handleCancel = () => {
@@ -100,9 +108,8 @@ function Tours() {
       xs: 12,
     };
     return (
-      <Col {...colProps} key={i}>
+      <Col onClick={() => handleCardClick(tour)} {...colProps} key={i}>
         <Card
-          onClick={() => handleCardClick(tour)}
           hoverable
           style={{ width: 200 }}
           cover={
@@ -202,26 +209,18 @@ function Tours() {
     );
   };
 
-  const childWithAnim = (
-    <div>
-      <p>khoa</p>
-      <p>khoa</p>
-      <p>khoa</p>
-      <p>khoa</p>
-      <p>khoa</p>
-    </div>
-  );
-
   console.log(selectedTour, "selectedTour");
   return (
     <div className="page-wrapper page1">
       <div className="page">
         <h1>Plan Your Pefect Trip</h1>
         <i />
-        <Button>See more places</Button>
-        <Modal onCancel={handleCancel} onOk={handleOk} open={visible}>
+        <Button style={{ width: 180, marginLeft: "80%" }}>
+          See more places
+        </Button>
+        {/* <Modal onCancel={handleCancel} onOk={handleOk} open={visible}>
           {selectedTour && modalChildren()}
-        </Modal>
+        </Modal> */}
         <OverPack>
           <QueueAnim key="queue" type="bottom" leaveReverse component={Row}>
             {children}

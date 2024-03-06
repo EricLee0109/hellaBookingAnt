@@ -87,6 +87,12 @@ function Banner() {
             />
             <Flex style={{ height: 600 }} justify="center" align="center">
               <Form
+                style={{
+                  maxWidth: "100%",
+                  width: "50%",
+                  backdropFilter: "blur(1px)",
+                  background: "rgba(0, 0, 0, 0.1)",
+                }}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 16 }}
                 onFinish={onFinish}
@@ -199,7 +205,7 @@ function Banner() {
                       />
                     </Form.Item>
                   </Flex>
-                  <Form.Item wrapperCol={{ offset: 22 }}>
+                  <Form.Item wrapperCol={{ span: 4, offset: 20 }}>
                     <Button type="primary" htmlType="submit">
                       Submit
                     </Button>
