@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { useState } from "react";
 import TabPane from "antd/es/tabs/TabPane";
+import { createGlobalStyle } from "antd-style";
 
 const iconStyles = {
   color: "rgba(0, 0, 0, 0.2)",
@@ -44,19 +45,50 @@ const iconStyles = {
   cursor: "pointer",
 };
 
+// const GlobalStyle = createGlobalStyle`
+//   .ant-form {
+//     background: rgba(255, 255, 255, 0.1) !important;
+//   }
+// `;
+
 const Page = () => {
   const [accessType, setAccessType] = useState("login");
-  const [loginSuccess, setLoginSucess] = useState(false);
+  // const [loginSuccess, setLoginSucess] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { token } = theme.useToken();
   const signIn = useSignIn();
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
-  const registerSuccess = () => {
+  const registerMess = () => {
     messageApi.open({
       type: "success",
       content: "Register Successful!",
+    });
+    setTimeout(messageApi.destroy, 2500);
+  };
+
+  const loginLoading = () => {
+    messageApi.open({
+      type: "loading",
+      content: "Login in progress...",
+    });
+
+    setTimeout(messageApi.destroy, 2500);
+  };
+
+  const loginSuccess = () => {
+    if (res === 200)
+      messageApi.open({
+        type: "success",
+        content: "Login Successful!",
+      });
+  };
+
+  const loginError = () => {
+    messageApi.open({
+      type: "error",
+      content: "Login Failed!",
     });
   };
 
@@ -73,20 +105,21 @@ const Page = () => {
       .post(accessType === "login" ? "/signIn" : "/signUp", values)
       .then((res) => {
         console.log("res: ", res);
-        if (res.status === 200) {
-          signIn({
-            auth: {
-              token: res.data.token.accessToken,
-              type: "Bearer",
-            },
-            // refresh: res.data.token.refreshToken,
-            userState: { email: values.email },
-          });
-          console.log("Login success");
-        }
+        message.loading("Login in progress...", 2.5);
+        signIn({
+          auth: {
+            token: res.data.token.accessToken,
+            type: "Bearer",
+          },
+          // refresh: res.data.token.refreshToken,
+          userState: { email: values.email },
+        })
+          .then(loginSuccess())
+          .catch(loginError);
+
         // setIsLoginModalVisible(false);
         if (isAuthenticated) {
-          registerSuccess();
+          registerMess();
           navigate(accessType === "login" && "/");
         } else {
           navigate("/login");
@@ -125,8 +158,14 @@ const Page = () => {
       }}
     >
       {contextHolder}
+      {/* <GlobalStyle /> */}
       <LoginFormPage
-        submitter={{ searchConfig: { submitText: "Login" } }}
+        className="login-form-page"
+        submitter={{
+          searchConfig: {
+            submitText: accessType === "login" ? "Sign in" : "Sign up",
+          },
+        }}
         onFinish={handleFinish}
         backgroundImageUrl="https://img.hotimg.com/landingPageHeader.png"
         logo={
@@ -136,7 +175,7 @@ const Page = () => {
         title="Hella"
         subTitle="Nowhere for who interested in travel and tour"
         containerStyle={{
-          backgroundColor: "rgba(0, 0, 0,0.65)",
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
           backdropFilter: "blur(4px)",
         }}
         // activityConfig={{
@@ -164,70 +203,74 @@ const Page = () => {
         //   ),
         // }}
         actions={
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Divider plain>
-              <span
-                style={{
-                  color: token.colorTextPlaceholder,
-                  fontWeight: "normal",
-                  fontSize: 14,
-                }}
-              >
-                Sign In as
-              </span>
-            </Divider>
-            <Space align="center" size={24}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  height: 40,
-                  width: 40,
-                  border: "1px solid " + token.colorPrimaryBorder,
-                  borderRadius: "50%",
-                }}
-              >
-                <FacebookOutlined style={{ ...iconStyles, color: "#1677FF" }} />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  height: 40,
-                  width: 40,
-                  border: "1px solid " + token.colorPrimaryBorder,
-                  borderRadius: "50%",
-                }}
-              >
-                <GoogleOutlined style={{ ...iconStyles, color: "#FF6A10" }} />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  height: 40,
-                  width: 40,
-                  border: "1px solid " + token.colorPrimaryBorder,
-                  borderRadius: "50%",
-                }}
-              >
-                <GithubOutlined style={{ ...iconStyles, color: "#1890ff" }} />
-              </div>
-            </Space>
-          </div>
+          accessType === "login" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <Divider plain>
+                <span
+                  style={{
+                    color: token.colorTextPlaceholder,
+                    fontWeight: "normal",
+                    fontSize: 14,
+                  }}
+                >
+                  Sign In as
+                </span>
+              </Divider>
+              <Space align="center" size={24}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    height: 40,
+                    width: 40,
+                    border: "1px solid " + token.colorPrimaryBorder,
+                    borderRadius: "50%",
+                  }}
+                >
+                  <FacebookOutlined
+                    style={{ ...iconStyles, color: "#1677FF" }}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    height: 40,
+                    width: 40,
+                    border: "1px solid " + token.colorPrimaryBorder,
+                    borderRadius: "50%",
+                  }}
+                >
+                  <GoogleOutlined style={{ ...iconStyles, color: "#FF6A10" }} />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    height: 40,
+                    width: 40,
+                    border: "1px solid " + token.colorPrimaryBorder,
+                    borderRadius: "50%",
+                  }}
+                >
+                  <GithubOutlined style={{ ...iconStyles, color: "#1890ff" }} />
+                </div>
+              </Space>
+            </div>
+          )
         }
       >
         <Tabs
@@ -409,7 +452,7 @@ const Page = () => {
             Forget password
           </a>
         </div>
-        {loginSuccess && (
+        {/* {loginSuccess && (
           <Alert
             style={{ marginBottom: 10 }}
             message="Login Successful!"
@@ -417,7 +460,7 @@ const Page = () => {
             type="success"
             showIcon
           />
-        )}
+        )} */}
       </LoginFormPage>
     </div>
   );

@@ -18,14 +18,18 @@ header .nav .card {
 }
 header .nav-title {
   display: block;
-  padding-top: 22px;
+  padding: 10px;
   border-top: 2px solid transparent;
   transition: border 0.3s;
   color: #fff;
   cursor: pointer;
+  font-size: larger;
+  font-weight: bold;
+  color: #2f54eb;
+  background: linear-gradient(to bottom, rgba(9, 15, 24, 0.164), rgba(112, 79, 79, 0.205));
 }
 header .nav-title:hover {
-  border-top-color: #fff;
+  border-top-color: #10239e;
 }
 header .blur-background::before {
   content: "";

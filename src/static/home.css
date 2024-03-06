@@ -42,7 +42,8 @@ a:focus {
   opacity: 1;
 }
 .banner {
-  background: url(https://gw.alipayobjects.com/zos/rmsportal/okhVRKJXxQpbpKGtKneS.svg) no-repeat center top;
+  background: url(https://res.cloudinary.com/dtlvihfka/image/upload/v1709537133/e5vdcvf6lzefr33lbarc.png) no-repeat center top;
+  
   background-size: contain;
   overflow: hidden;
   font-family: PingFang SC, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -51,7 +52,7 @@ a:focus {
   max-width: 1248px;
 }
 .banner .logo {
-  /* background: url('../img/HellaBookingLogo.png') no-repeat; */
+  background: url('../img/HellaBookingLogo.png') no-repeat;
   background: url('https://res.cloudinary.com/dtlvihfka/image/upload/v1709178491/ekmd80ee6du84b0nptld.png') no-repeat;
   background-size: contain;
   width: 127px;
@@ -324,3 +325,8 @@ a:focus {
   max-width: 94%;
   display: inline-block;
 }
+
+/* Config Form component of Ant design in Global */
+.ant-form {
+  background: rgba(255, 255, 255, 0.1) !important;
+} 

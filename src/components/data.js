@@ -24,7 +24,7 @@ export const header = [
     ],
   },
   {
-    title: 'Register',
+    title: 'User',
     children: [
      
     ],
@@ -32,7 +32,7 @@ export const header = [
 ];
 export const banner = [
   {
-    img: 'https://gw.alipayobjects.com/zos/rmsportal/cTyLQiaRrpzxFAuWwoDQ.svg',
+    img: 'https://res.cloudinary.com/dtlvihfka/image/upload/v1709537133/e5vdcvf6lzefr33lbarc.png',
     imgMobile: 'https://gw.alipayobjects.com/zos/rmsportal/ksMYqrCyhwQNdBKReFIU.svg',
     className: 'seeconf-wrap',
     children: [

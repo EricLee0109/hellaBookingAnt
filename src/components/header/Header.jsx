@@ -1,22 +1,12 @@
 import { Avatar, Button, Card, Col, Row, Tooltip } from "antd";
 import { header } from "../data";
-import LoginModal from "../loginModal/LoginModal";
-import { useState } from "react";
-import axios from "../../api/axios";
-import RegisterModal from "../../registerModal/RegisterModal";
-import useSignIn from "react-auth-kit/hooks/useSignIn";
-import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 import { useNavigate } from "react-router-dom";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import {
-  BoldOutlined,
   EditOutlined,
-  EllipsisOutlined,
   LogoutOutlined,
   SettingOutlined,
-  SignatureOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 
 function Header() {
@@ -39,6 +29,8 @@ function Header() {
   //   setIsRegisterModalVisible(!isRegisterModalVisible);
   // };
 
+  /* image 7 */
+
   // const showLoginModal = () => {
   //   setIsLoginModalVisible(!isLoginModalVisible);
   // };
@@ -50,11 +42,60 @@ function Header() {
 
   const filteredTitleData = authUser
     ? header.filter(
-        (item) => item.title === "Tour" || item.title === "Tour Guide"
+        (userAuth) =>
+          userAuth.title === "Tour" ||
+          userAuth.title === "Tour Guide" ||
+          userAuth.title === "User"
       )
-    : header.title;
+    : header.filter(
+        (user) =>
+          user.title === "Tour" ||
+          user.title === "Tour Guide" ||
+          user.title === "Login"
+      );
 
-  const menuChild = (authUser ? filteredTitleData : header).map((item, i) => {
+  const handleClickLogin = () => {
+    navgiate("/login");
+  };
+
+  const userTooltip = authUser && (
+    <Col flex="0 1 300px">
+      <Card
+        styles={{
+          // use for clasName = "ant-card-meta" of Card.Meta
+          header: { color: "#fefefe" },
+          body: { color: "#fefefe", fontWeight: "bold" },
+          title: { color: "#f3e" },
+        }}
+        className="nav card"
+        actions={[
+          <SettingOutlined key="setting" />,
+          <EditOutlined key="edit" />,
+          <LogoutOutlined onClick={handleSignOut} key={"signOut"} />,
+        ]}
+      >
+        <Card.Meta
+          style={{
+            color: "#1677ff",
+            background: "#f9f9f9",
+            backdropFilter: "blur(10px)",
+          }}
+          prefixCls="ant-card-meta"
+          avatar={
+            <Avatar
+              style={{ background: "#85a5ff" }}
+              size={64}
+              src="https://api.dicebear.com/7.x/miniavs/svg?seed=2"
+            />
+          }
+          // title="User"
+          description={auth?.email}
+        />
+      </Card>
+    </Col>
+  );
+
+  const menuChild = filteredTitleData.map((item, i) => {
     const content = item.children.map((child, ii) => (
       <a href={child.link} key={ii.toString()} className="tip-block">
         <span className="tip-img">
@@ -69,13 +110,21 @@ function Header() {
 
     console.log(filteredTitleData, "filteredTitleData");
     return (
-      <Col key={i.toString()} span={6}>
+      <Col key={i.toString()} span={8}>
         <Tooltip
-          title={content}
+          title={item.title === "User" ? userTooltip : content}
           placement="bottom"
           overlayClassName="header-tip-wrap"
         >
-          <span className="nav-title">{item.title}</span>
+          <span
+            onClick={
+              (item.title === "Login" || item.title === "Register") &&
+              handleClickLogin
+            }
+            className="nav-title"
+          >
+            {item.title}
+          </span>
         </Tooltip>
       </Col>
     );
@@ -86,36 +135,6 @@ function Header() {
         <Col style={{ height: 100, display: "flex" }} flex="auto">
           {menuChild}
         </Col>
-        {authUser && (
-          <Col flex="0 1 300px">
-            <Card
-              styles={{
-                // use for clasName = "ant-card-meta" of Card.Meta
-                header: { color: "#fefefe" },
-                body: { color: "#fefefe", fontWeight: "bold" },
-                title: { color: "#f3e" },
-              }}
-              className="nav card"
-              actions={[
-                <SettingOutlined key="setting" />,
-                <EditOutlined key="edit" />,
-                <LogoutOutlined onClick={handleSignOut} key={"signOut"} />,
-              ]}
-            >
-              <Card.Meta
-                prefixCls="ant-card-meta"
-                avatar={
-                  <Avatar
-                    size={64}
-                    src="https://api.dicebear.com/7.x/miniavs/svg?seed=2"
-                  />
-                }
-                title="User"
-                description={auth?.email}
-              />
-            </Card>
-          </Col>
-        )}
       </Row>
       {/* <Row gutter={1000}>
         <Col offset={1} span={12}>
