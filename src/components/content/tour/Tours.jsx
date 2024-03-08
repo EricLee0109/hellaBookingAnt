@@ -99,6 +99,8 @@ function Tours() {
     joinedLocationTour.push(joinedLocationTourObject);
   }
 
+  //Joineddata locationInTour with locations, tours
+
   // console.log(joinedLocationTour, "joinedLocationTour");
 
   const children = joinedData.slice(0, 4).map((tour, i) => {
