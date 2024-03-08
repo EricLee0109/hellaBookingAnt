@@ -9,10 +9,12 @@ const { Element } = BannerAnim;
 const { BgElement } = Element;
 import { useState } from "react";
 import { DatePicker, Divider, Flex, Form, InputNumber, Select } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 
 function Banner() {
+  const navigate = useNavigate();
   // getDuration = (e) => {
   //   if (e.key === "map") {
   //     return 800;
@@ -44,6 +46,11 @@ function Banner() {
     console.log(newSelectedValues);
   };
 
+  const handleHomePage = () => {
+    navigate("/");
+    console.log("clicked");
+  };
+
   // render() {
   //   const { isMobile } = this.props;
   //   const bannerChildren = banner.map((item, i) => {
@@ -72,7 +79,11 @@ function Banner() {
   return (
     <div className="banner page-wrapper">
       <div className="page">
-        <div className="logo" />
+        <div
+          className="logo"
+          style={{ cursor: "pointer" }}
+          onClick={handleHomePage}
+        />
         <p className="logoName">Hella</p>
         <BannerAnim type="across" duration={550} ease="easeInOutQuint">
           <Element>

@@ -32,7 +32,7 @@ import {
 // import travelVideo from "../../img/travelEarth.mp4";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { useState } from "react";
 import TabPane from "antd/es/tabs/TabPane";
@@ -78,11 +78,10 @@ const Page = () => {
   };
 
   const loginSuccess = () => {
-    if (res === 200)
-      messageApi.open({
-        type: "success",
-        content: "Login Successful!",
-      });
+    messageApi.open({
+      type: "success",
+      content: "Login Successful!",
+    });
   };
 
   const loginError = () => {
@@ -113,9 +112,14 @@ const Page = () => {
           },
           // refresh: res.data.token.refreshToken,
           userState: { email: values.email },
-        })
-          .then(loginSuccess())
-          .catch(loginError);
+        });
+        if (res.data.status === 200) {
+          messageApi.success("Login successful!");
+          navigate("/");
+        } else {
+          messageApi.error("Login failed!");
+          redirect("/");
+        }
 
         // setIsLoginModalVisible(false);
         if (isAuthenticated) {
