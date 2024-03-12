@@ -11,21 +11,15 @@ import {
   Col,
   Modal,
   Calendar,
-  Badge,
 } from "antd";
-import {
-  EnvironmentFilled,
-  CalendarOutlined,
-  CarTwoTone,
-  FireTwoTone,
-} from "@ant-design/icons";
+import { EnvironmentFilled, CalendarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import "./BookingPage.css";
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
-const BookingPage = () => {
+const ToursDaLat = () => {
   const [selectedTour, setSelectedTour] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [tourPrice, setTourPrice] = useState({
@@ -44,10 +38,10 @@ const BookingPage = () => {
 
   const carouselImages = [
     [
-      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgd_6dVxQJShOe-IX58LpZtPyDuSuN6OIZrrNdtwxEFo2fGIZvLfJyGtZcTTXo9qKxFwSVD2sCaZNhq7pgRRnJ0BGXd6jkKmUey17TrK2IWp0n-YHwZiSnXXA-1vbZRtypUvaFq9pvt93mH/s1600/Anh-bia-phong-canh-thien-nhien-+(12).jpg",
-      "https://i.pinimg.com/564x/c8/2c/cd/c82ccddacbdfdc0484536b82cf2374c2.jpg",
-      "https://res.klook.com/image/upload/fl_lossy.progressive,w_800,c_fill,q_85/destination/lbnwgbgs4eqnzlvozlql.jpg",
-      "https://eholiday.vn/wp-content/uploads/2021/01/8-ly-do-ban-nen-den-ha-noi-1-lan-trong-doi-4.jpg",
+      "https://duongxuavilla.com/wp-content/uploads/2023/04/kinh-nghiem-du-lich-da-lat-900x473.jpg",
+      "https://toigingiuvedep.vn/wp-content/uploads/2021/05/tong-hop-hinh-anh-da-lat-dep-mong-mo-lang-man-nhat.jpg",
+      "https://upanh123.com/wp-content/uploads/2020/10/anh-dep-da-lat3.jpg",
+      "https://media.vneconomy.vn/w800/images/upload/2023/07/06/1688465738-grasp-the-rainy-season-travel-tips-to-da-lat.jpg",
     ],
   ];
 
@@ -75,10 +69,6 @@ const BookingPage = () => {
     handleOpenCalendarModal();
   };
 
-  const onFinish = (values) => {
-    setSelectedMonth(values.month);
-    setSelectedYear(values.year);
-  };
   useEffect(() => {
     const updateBoxPosition = () => {
       const floatingBox = document.getElementById("floating-box");
@@ -101,9 +91,9 @@ const BookingPage = () => {
       <Header>
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
-          <Menu.Item key="1">Home</Menu.Item>
-          <Menu.Item key="2">About</Menu.Item>
-          <Menu.Item key="3">Contact</Menu.Item>
+          <Menu.Item key="1">Trang chủ</Menu.Item>
+          <Menu.Item key="2">Giới thiệu</Menu.Item>
+          <Menu.Item key="3">Liên hệ</Menu.Item>
         </Menu>
       </Header>
       <Content style={{ padding: "90px 100px" }}>
@@ -125,7 +115,7 @@ const BookingPage = () => {
                         display: "flex",
                       }}
                     >
-                      <EnvironmentFilled /> Hanoi - Tour
+                      <EnvironmentFilled /> Đà Lạt- Tour
                     </h1>
                   </div>
                   <div>
@@ -186,27 +176,13 @@ const BookingPage = () => {
         <div style={{ padding: "55px", maxWidth: "1700px", margin: "0 auto" }}>
           <Row gutter={19}>
             <Col span={18}>
-              <Card style={{ marginBottom: "5px" }}>
-                <ul class="horizontal-list">
-                  <ul style={{ display: "flex", listStyleType: "none" }}>
-                    <li style={{ marginRight: "100px" }}>
-                      <CarTwoTone /> Transportation service
-                    </li>
-                    <li style={{ marginRight: "90px" }}>
-                      <FireTwoTone /> Fire
-                    </li>
-                  </ul>
-                </ul>
-                <Title level={4}>Tour Information</Title>
+              <Card style={{ marginBottom: "0px" }}>
+                <Title level={4}>Thông tin tour</Title>
                 <Rate disabled defaultValue={4.5} />
-                <Text> 9.2 Great | From 34 reviews </Text>
+                <Text> 9.2 Tuyệt vời | Từ 34 đánh giá </Text>
                 <br />
                 <br />
-                <div
-                  style={{
-                    width: "700px",
-                  }}
-                >
+                <div style={{ width: "700px" }}>
                   <Text
                     strong
                     style={{
@@ -214,63 +190,57 @@ const BookingPage = () => {
                       color: "#333",
                     }}
                   >
-                    Here is a small part of the great experiences you will have
-                    on your journey in Hanoi. Additionally, you will have the
-                    opportunity to visit famous destinations such as Perfume
-                    Pagoda, Thang Long Imperial Citadel, Temple of Literature,
-                    and many other places.
+                    Dưới đây là một phần nhỏ của những trải nghiệm tuyệt vời bạn
+                    sẽ có trong chuyến hành trình tại Đà Lạt. Ngoài ra, bạn còn
+                    có cơ hội tham quan các điểm đến nổi tiếng như Thung lũng
+                    Tình yêu, Hồ Xuân Hương, Dinh Bảo Đại, và nhiều địa điểm
+                    khác.
                   </Text>
                   <br />
                 </div>
-
                 <div class="schedule">
                   <div class="schedule-item">
                     <div class="time">07:30-12:00</div>
                     <div>
-                      Bus with guide pick up guests at the hotel to visit Halong
-                      Bay (only applicable to tickets departing from Hanoi).
+                      Xe cùng hướng dẫn viên đón khách tại khách sạn khởi hành
+                      đi thăm Thung lũng Tình yêu (chỉ áp dụng với vé khởi hành
+                      từ Hà Nội).
                     </div>
                   </div>
                   <div class="schedule-item">
                     <div class="time">12:00-12:15</div>
                     <div>
-                      Guests arrive at Halong Bay cruise port and board.
+                      Quý khách đến Đà Lạt và làm thủ tục nhận phòng tại khách
+                      sạn.
                     </div>
                   </div>
                   <div class="schedule-item">
                     <div class="time">12:15-14:00</div>
                     <div>
-                      The ship departs and starts the Halong Bay cruise, passing
-                      through large and small rock formations with special names
-                      like: Fighting Cock Island, Dog Stone, Dinh Huong Islet.
-                      Guests have lunch on board.
+                      Dùng bữa trưa tại nhà hàng địa phương để thưởng thức các
+                      món ăn đặc sản.
                     </div>
                   </div>
                   <div class="schedule-item">
                     <div class="time">14:00-16:30</div>
                     <div>
-                      Guests visit Surprising Cave, one of the most beautiful
-                      caves in Halong Bay. Then, the ship moves to Luon Cave,
-                      where guests can kayak/row or rest on the ship. Next, the
-                      ship takes guests to Ti Top Island. Guests can swim at
-                      TiTop beach with white sand, or trek up Ti Top mountain to
-                      enjoy the panoramic view of Halong Bay.
+                      Thăm quan Dinh Bảo Đại và Hồ Xuân Hương, nơi mang đến cho
+                      bạn không khí trong lành và tĩnh lặng.
                     </div>
                   </div>
                   <div class="schedule-item">
                     <div class="time">16:30-18:00</div>
                     <div>
-                      Return to the ship to return to Halong port. Guests can
-                      listen to music and relax on the ship's deck, immerse
-                      themselves in nature.
+                      Dạo quanh thành phố Đà Lạt để khám phá vẻ đẹp thơ mộng của
+                      những con đường và cảnh quan tự nhiên.
                     </div>
                   </div>
                   <div class="schedule-item">
                     <div class="time">18:00-21:30</div>
                     <div>
-                      The ship docks. Farewell to the ship and board the car
-                      back to Hanoi (only applicable to tickets departing from
-                      Hanoi). End of tour.
+                      Tối, thưởng thức những món ăn địa phương tại nhà hàng
+                      truyền thống và tận hưởng không gian ấm áp của Đà Lạt. Kết
+                      thúc tour.
                     </div>
                   </div>
                 </div>
@@ -278,46 +248,28 @@ const BookingPage = () => {
             </Col>
             <Col span={6}>
               <Card>
-                <Badge.Ribbon text="Trustworthy Information" color="green">
-                  <Card.Meta
-                    title="Tour"
-                    description={
-                      <>
-                        <div>
-                          <Rate disabled defaultValue={7} />
-                          <br></br>
-                          <span>
-                            {" "}
-                            Top destination: Highly rated by guests (9.9 points)
-                          </span>
-                        </div>
-                        <div>
-                          <Badge
-                            status="processing"
-                            text="Free private parking inside the premises"
-                          />
-                        </div>
-                      </>
-                    }
-                  />
-                </Badge.Ribbon>
-                <br></br>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  onClick={scrollToTourSection}
+                <div
                   style={{
-                    backgroundColor: "#FF8C00",
-                    borderColor: "#FF8C00",
-                    marginLeft: "auto",
-                    fontSize: "14px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  Book Tour Now
-                </Button>
-                <div style={{ marginTop: "16px" }}>
-                  Guests say that the description and images of this property
-                  are very accurate.
+                  <Title level={3} style={{ color: "#FF8C00" }}>
+                    {tourPrice[selectedDate]} 1000$
+                  </Title>
+
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    onClick={scrollToTourSection}
+                    style={{
+                      backgroundColor: "#FF8C00",
+                      borderColor: "#FF8C00",
+                    }}
+                  >
+                    Đặt Tour Ngay
+                  </Button>
                 </div>
               </Card>
               <div
@@ -332,11 +284,11 @@ const BookingPage = () => {
                   padding: "1rem",
                   borderRadius: "4px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  display: window.innerWidth < 992 ? "none" : "block",
+                  display: window.innerWidth < 992 ? "none" : "block", // Hide on smaller screens
                 }}
               >
                 <div style={{ marginBottom: "1rem" }}>
-                  <strong>Customer Support</strong>
+                  <strong>Hỗ trợ khách hàng</strong>
                 </div>
                 <div style={{ marginBottom: "1rem" }}>
                   Hotline: <a href="tel:19001888">1900 1888</a>
@@ -349,7 +301,7 @@ const BookingPage = () => {
                   type="primary"
                   style={{ backgroundColor: "#FF8C00", borderColor: "#FF8C00" }}
                 >
-                  Want a callback?
+                  Bạn muốn được gọi lại?
                 </Button>
               </div>
             </Col>
@@ -365,7 +317,7 @@ const BookingPage = () => {
               marginTop: "-90px",
             }}
           >
-            <Card title="Shared Tour - Departing from Phu Quoc">
+            <Card title="Tour ghép - Khởi hành tại Phú Quốc">
               <Row gutter={16}>
                 <Col span={24}>
                   <Button
@@ -374,10 +326,10 @@ const BookingPage = () => {
                     onClick={handleCalendarButtonClick}
                     style={{ marginBottom: 16, borderRadius: "8px" }}
                   >
-                    View Calendar
+                    Xem lịch
                   </Button>
                   <Modal
-                    title="Calendar"
+                    title="Lịch"
                     visible={isCalendarVisible}
                     onCancel={handleCloseCalendarModal}
                     footer={null}
@@ -390,9 +342,9 @@ const BookingPage = () => {
                       <Button
                         key={day}
                         className="date-pill"
-                        onClick={() => handleDateChange(`${day + 13} Mar`)}
+                        onClick={() => handleDateChange(`${day + 13} thg 3`)}
                       >
-                        {day + 13} Mar
+                        {day + 13} thg 3
                       </Button>
                     ))}
                   </Button.Group>
@@ -402,8 +354,8 @@ const BookingPage = () => {
                 <Row align="middle" justify="space-between">
                   <Col>
                     <Title level={4} style={{ color: "#FF8C00" }}>
-                      {tourPrice[selectedDate]} Shared tour for up to 40 guests
-                      - Departure from HCMC | Vietjet Air Flight
+                      {tourPrice[selectedDate]} Tour ghép cho tối đa 40 khách -
+                      Khởi hành TPHCM | Bay Vietjet Air
                     </Title>
                   </Col>
                   <Col>
@@ -413,7 +365,7 @@ const BookingPage = () => {
                       style={{ backgroundColor: "#FF8C00" }}
                       onClick={handleBookTour}
                     >
-                      Book Tour Now
+                      Đặt Tour Ngay
                     </Button>
                   </Col>
                 </Row>
@@ -427,4 +379,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage;
+export default ToursDaLat;

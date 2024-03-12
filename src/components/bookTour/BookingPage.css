@@ -1,0 +1,229 @@
+.body {
+  background-image: url("https://images.saymedia-content.com/.image/t_share/MTc2MjY4NDcxMDE2OTU3MTAx/tropical-beach-pictures.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
+
+.banner img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.landing-page {
+  background-image: url("https://demoda.vn/wp-content/uploads/2022/01/background-xanh-duong-loang-trang-800x600.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.booking-container {
+  max-width: 400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.carousel-container {
+  width: calc(100% - 500px);
+}
+
+.carousel {
+  width: 200%;
+  height: 600px;
+}
+
+.carousel img {
+  width: 100%;
+  height: 100%;
+}
+
+.booking-form {
+  background-image: url("your-image-url.jpg");
+  background-color: linear-gradient(
+    109.6deg,
+    rgba(156, 252, 248, 1) 11.2%,
+    rgba(110, 123, 251, 1) 91.1%
+  );
+  padding: 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgb(12, 163, 227);
+  margin-top: 50px;
+}
+.progress-bar {
+  margin-bottom: 20px;
+}
+.tour-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 20px;
+  background-color: #f9f9f9;
+}
+.tour-booking-card.right-align {
+  float: right;
+  width: 30%; /* Adjust width as needed */
+  margin-left: 10px;
+  padding: 10px;
+  margin: 20px;
+  background-color: #bfcae6;
+}
+.left-aligned-descriptions {
+  float: left;
+  width: 0%;
+  margin-left: 20px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+}
+.descriptions-container ul {
+  list-style-type: disc; /* Loại dấu tích tròn */
+}
+.left-aligned-descriptions {
+  text-align: left;
+}
+.booking-button .booking-price {
+  font-size: 1.5em;
+  color: #ff4d4f;
+  font-weight: bold;
+}
+.calendar {
+  margin-top: 20px;
+}
+
+.calendar-header {
+  color: rgb(3, 18, 26);
+}
+
+.calendar-dates {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.date-pill {
+  background-color: #060101;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  color: rgb(3, 18, 26);
+}
+.tour-info-container {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.schedule {
+  margin-top: 20px;
+}
+
+.schedule-item {
+  margin-bottom: 20px;
+}
+
+.time {
+  font-weight: bold;
+  color: #007bff;
+}
+.horizontal-list li {
+  display: inline-block;
+  margin-right: 100px;
+}
+.date-selector-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the date items in the container */
+  margin-bottom: 20px; /* Add some space below the date selector */
+}
+
+.dates-scroll-container {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping of items */
+  overflow-x: auto; /* Allow horizontal scrolling */
+  gap: 10px; /* Add some space between date items */
+  padding: 10px; /* Padding inside the scroll container */
+  margin: 0 10px; /* Margin on the sides of the scroll container */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.dates-scroll-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.date-item {
+  min-width: 90px; /* Set a minimum width for each date item */
+  text-align: center; /* Center the text inside the date item */
+  padding: 10px; /* Padding inside the date item */
+  border: 1px solid #d9d9d9; /* Border color for all items */
+  border-radius: 4px; /* Rounded corners for the date items */
+  cursor: pointer; /* Pointer cursor on hover */
+  user-select: none; /* Prevent text selection */
+  background-color: #f0ffff; /* Background color for date items */
+  box-shadow: #fff5ee; /* Shadow for each date item */
+}
+
+.date-item:hover {
+  background-color: #1890ff; /* Background color on hover */
+  color: #fff; /* Text color on hover */
+  border-color: #1890ff; /* Border color on hover */
+}
+
+.date-item.selected {
+  background-color: #1890ff; /* Background color for selected item */
+  color: #fff; /* Text color for selected item */
+  border-color: #1890ff; /* Border color for selected item */
+}
+
+/* Định dạng card */
+.ant-card {
+  border-radius: 8px; /* Bo góc cho card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bóng đổ cho card */
+}
+
+/* Định dạng tiêu đề và giá */
+.ant-card .ant-typography {
+  display: block;
+  margin-bottom: 8px; /* Khoảng cách dưới mỗi phần tử */
+  color: #333; /* Màu chữ */
+}
+
+/* Định dạng cho InputNumber */
+.ant-card .ant-input-number {
+  width: 100%; /* Độ rộng tối đa */
+  margin-top: 4px; /* Khoảng cách trên input */
+  margin-bottom: 16px; /* Khoảng cách dưới input */
+}
+
+/* Định dạng cho tổng giá tiền */
+.ant-card .total-price {
+  font-size: 24px; /* Kích thước chữ */
+  color: #ff4d4f; /* Màu chữ */
+  font-weight: 500; /* Độ đậm chữ */
+  margin-top: 16px; /* Khoảng cách trên tổng giá */
+}
+
+.ant-card .book-button {
+  background-color: #ff4d4f; /* Màu nền của nút */
+  border-color: #ff4d4f; /* Màu viền của nút */
+  color: white; /* Màu chữ của nút */
+  font-weight: bold; /* Độ đậm chữ của nút */
+  text-transform: uppercase; /* Chữ hoa */
+  padding: 10px 20px; /* Padding của nút */
+  border-radius: 4px; /* Bo góc của nút */
+  font-size: 16px; /* Kích thước chữ của nút */
+  width: 100%; /* Độ rộng của nút */
+  text-align: center; /* Căn chữ giữa nút */
+  display: block; /* Hiển thị block để chiếm độ rộng tối đa */
+  margin-top: 24px; /* Khoảng cách trên nút */
+}
+
+.ant-card .book-button:hover {
+  background-color: #e53e3e;
+  border-color: #e53e3e;
+}

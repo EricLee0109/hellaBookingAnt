@@ -1,0 +1,100 @@
+.search-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.tour-card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 750px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tour-card img {
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 40%;
+  height: auto;
+  object-fit: cover;
+}
+
+.tour-card .ant-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tour-card .ant-card-body .ant-typography {
+  margin-bottom: 16px;
+}
+
+.tour-card .ant-rate {
+  font-size: 16px;
+}
+
+.tour-card .ant-tag {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.tour-card .ant-badge-ribbon {
+  top: -8px;
+  right: -8px;
+}
+
+@media (max-width: 768px) {
+  .tour-card {
+    flex-direction: column;
+  }
+
+  .tour-card img {
+    width: 250px;
+    height: auto;
+    object-fit: cover;
+  }
+}
+.horizontal-card {
+  display: flex;
+  flex-direction: row;
+}
+
+.horizontal-card .ant-card {
+  width: 300px;
+  margin-right: 20px;
+  transform: rotate(0deg);
+}
+
+.horizontal-card .ant-card-cover img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.horizontal-card {
+  display: flex;
+  flex-direction: row;
+  margin: 90px;
+}
+body {
+  margin: 8%;
+  line-height: inherit;
+}
+.horizontal-card {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 30%;
+  margin: 10px;
+}
+
+.card-link {
+  width: 100%;
+}

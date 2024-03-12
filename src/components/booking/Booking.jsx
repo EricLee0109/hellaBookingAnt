@@ -11,6 +11,7 @@ import {
   Steps,
 } from "antd";
 import { FireFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -19,10 +20,13 @@ const { Content } = Layout;
 
 const BookingPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-
   const onFinish = (values) => {
     console.log("Received values of form:", values);
+  };
+  const navigate = useNavigate();
+
+  const bookingNavigate = () => {
+    navigate("/payment");
   };
 
   return (
@@ -31,7 +35,13 @@ const BookingPage = () => {
         <div className="site-layout-content">
           <Form
             id="booking-form"
-            style={{ marginBottom: 20, maxWidth: "100%", padding: 0 }}
+            style={{
+              marginBottom: 50,
+              maxWidth: "100%",
+              padding: 50,
+              marginRight: 50,
+              marginLeft: 70,
+            }}
             name="booking"
             initialValues={{ remember: true }}
             onFinish={onFinish}
@@ -53,9 +63,10 @@ const BookingPage = () => {
                 <h1
                   style={{
                     textAlign: "center",
-                    fontSize: "2rem",
+                    fontSize: "1.75rem",
                     fontWeight: "bold",
-                    marginBottom: "20px",
+                    marginBottom: "30px",
+                    color: "#1890ff",
                   }}
                 >
                   <FireFilled style={{ marginRight: "10px" }} />
@@ -109,59 +120,30 @@ const BookingPage = () => {
                   <TimePicker format="HH:mm" minuteStep={15} />
                 </Form.Item>
               </div>
-              <div className="input-container">
-                <Form.Item
-                  name="adultCount"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the number of adults!",
-                    },
-                  ]}
-                >
-                  <InputNumber min={0} placeholder="Adult" />
-                </Form.Item>
-              </div>
-              <div className="input-container">
-                <Form.Item
-                  name="childCount"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the number of children!",
-                    },
-                  ]}
-                >
-                  <InputNumber min={0} placeholder="Child" />
-                </Form.Item>
-              </div>
-              <div className="input-container">
-                <Form.Item
-                  name="guide"
-                  rules={[
-                    { required: true, message: "Please select a guide!" },
-                  ]}
-                >
-                  <Select placeholder="Select Guide">
-                    <Option value="John Doe">John Doe</Option>
-                    <Option value="Jane Smith">Jane Smith</Option>
-                    <Option value="David Johnson">David Johnson</Option>
-                  </Select>
-                </Form.Item>
-              </div>
+
               <div
                 className="summary-container"
                 style={{ textAlign: "center" }}
               >
-                <p style={{ color: "red" }}>Total Price: ${totalPrice}</p>
-
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  onClick={() => bookingNavigate("/payment")}
+                <div
+                  className="summary-container"
+                  style={{ textAlign: "center" }}
                 >
-                  Booking Now
-                </Button>
+                  <Button
+                    type="primary"
+                    onClick={bookingNavigate}
+                    style={{
+                      backgroundColor: "#FFA500",
+                      borderColor: "#FFA500",
+                      color: "#FFFFFF",
+                      fontWeight: "bold",
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                    }}
+                    className="booking-button"
+                  >
+                    Booking Now
+                  </Button>
+                </div>
               </div>
             </div>
           </Form>
