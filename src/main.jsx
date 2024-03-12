@@ -11,8 +11,9 @@ import ErrorPage from "./components/errorPage/ErrorPage.jsx";
 import LoginPage from "./components/loginPage/LoginPage.jsx";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
-import TourDetail from "./components/tourDetail/tourDetail.jsx";
+import TourDetail from "./components/tourDetail/TourDetail.jsx";
 import PaymentPage from "./payment/PaymentPage.jsx";
+import SearchPage from "./components/search/SearchPage.jsx";
 // import { AuthProvider } from "react-auth-kit";
 
 // import './index.css'
@@ -27,36 +28,68 @@ const store = createStore({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <App />,
     errorElement: <ErrorPage />,
-    // children: [
-    //   //reder one more component in <Home> component with <Outlet> component
-    //   {
-    //     path: "/dashboard",
-    //     element: <Dashboard />,
-    //   },
-    // ],
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "tourDetail/:id",
+        element: <TourDetail />,
+      },
+      {
+        path: "search",
+        element: <SearchPage />,
+      },
+      {
+        path: "booking",
+        element: <PaymentPage />,
+      },
+    ],
   },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/tourDetail/:id",
-    element: <TourDetail />,
-  },
-  {
-    path: "/payment",
-    element: (
-      <RequireAuth>
-        <PaymentPage />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: "*",
-    element: <ErrorPage />,
-  },
+
+  // {
+  //   path: "/",
+  //   element: <Home />,
+  //   errorElement: <ErrorPage />,
+  //   children: [
+  //     //reder one more component in <Home> component with <Outlet> component
+  //     {
+  //       path: "/navbar",
+  //       element: <Navbar />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "/login",
+  //   element: <LoginPage />,
+  // },
+  // {
+  //   path: "/tourDetail/:id",
+  //   element: <TourDetail />,
+  // },
+  // {
+  //   path: "/payment",
+  //   element: (
+  //     <RequireAuth>
+  //       <PaymentPage />
+  //     </RequireAuth>
+  //   ),
+  // },
+  // {
+  //   path: "/navbar",
+  //   element: <Navbar />,
+  // },
+  // {
+  //   path: "*",
+  //   element: <ErrorPage />,
+  // },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

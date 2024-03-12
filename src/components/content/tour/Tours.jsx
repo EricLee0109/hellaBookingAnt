@@ -20,7 +20,7 @@ function Tours() {
   const { Meta } = Card;
   const TOURS_URL = "/tours";
   const LOCATION_IN_TOUR_URL = "/tours/locations";
-  const joinedData = []; // Join the tour and locationInTours data
+  const joinedLocationsInTourData = []; // Join the tour and locationInTours data
   const joinedLocationTour = []; // Join the locationInTour and joinedData
   const navigate = useNavigate();
 
@@ -57,13 +57,8 @@ function Tours() {
   };
 
   // Join the tour and locationInTours data
-  for (const tour of toursData) {
-    const locationInTour = locationInToursData.find(
-      (locationInTour) => locationInTour.tourId === tour.id
-    );
-    // const locations = locationInToursData.filter(
-    //   (locationInTour) => locationInTour.tourId === tour.id
-    // );
+  for (const locationsInTour of locationInToursData) {
+    const tours = toursData.find((tour) => tour.id === locationsInTour.tourId);
 
     // const joinedObject = {
     //   ...tour,
@@ -71,39 +66,36 @@ function Tours() {
     // }; // if we use that way, tour.id will be overrided by locationInTour.tourId
 
     // Rename the id property in tour to tourId
-    const { id: tourId, ...restOfTour } = tour;
+    // const { id: tourId, ...restOfTour } = tours;
+    // const { ...locationInToursData } = locationsInTour;
     const joinedObject = {
-      ...restOfTour,
-      tourId,
+      // ...restOfTour,
+      // tourId,
       // location: locations,
-      ...locationInTour,
+      ...tours,
+      ...locationsInTour,
     }; //this way, we can keep both id and tourId (because if tour.id does not have locationInTour, it will be undefined and will not be added to the joinedObject)
-
-    // console.log(tour, "tour");
-    // console.log(locationInTour, "locationInTour");
-    joinedData.push(joinedObject);
+    joinedLocationsInTourData.push(joinedObject);
   }
-  // console.log(joinedData, "joinedData");
+  console.log(joinedLocationsInTourData, "joinedDataaa");
   // console.log(locationInToursData, "locationsInTourData");
   // console.log(toursData, "toursData");
   // console.log(filteredData, "filteredData");
 
-  for (const tour of joinedData) {
-    const joinedLocationInTour = locationInToursData.filter(
-      (locationInTour) => locationInTour.tourId === tour.tourId
-    );
-    const joinedLocationTourObject = {
-      ...tour,
-      locationInTour: joinedLocationInTour,
-    };
-    joinedLocationTour.push(joinedLocationTourObject);
-  }
+  // for (const tour of joinedData) {
+  //   const joinedLocationInTour = locationInToursData.filter(
+  //     (locationInTour) => locationInTour.tourId === tour.tourId
+  //   );
+  //   const joinedLocationTourObject = {
+  //     ...tour,
+  //     locationInTour: joinedLocationInTour,
+  //   };
+  //   joinedLocationTour.push(joinedLocationTourObject);
+  // }
 
   //Joineddata locationInTour with locations, tours
 
-  // console.log(joinedLocationTour, "joinedLocationTour");
-
-  const children = joinedData.slice(0, 4).map((tour, i) => {
+  const children = joinedLocationsInTourData.slice(0, 4).map((tour, i) => {
     const colProps = {
       //use to responsive col
       md: tour.full ? 24 : 6,

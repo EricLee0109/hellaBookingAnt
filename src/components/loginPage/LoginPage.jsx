@@ -37,6 +37,7 @@ import axios from "../../api/axios";
 import { useState } from "react";
 import TabPane from "antd/es/tabs/TabPane";
 import { createGlobalStyle } from "antd-style";
+import Navbar from "../navbar/Navbar";
 
 const iconStyles = {
   color: "rgba(0, 0, 0, 0.2)",
@@ -463,8 +464,8 @@ const Page = () => {
             description="Please wait for a minute!"
             type="success"
             showIcon
-          />
-        )} */}
+            />
+          )} */}
       </LoginFormPage>
     </div>
   );
