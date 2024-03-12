@@ -11,17 +11,16 @@ function RightMenu({ mode }) {
 
   const handleSignOut = () => {
     signOut();
-    window.location.reload();
   };
 
   console.log(authUser, "authUser");
   return authUser ? (
     <Menu mode={mode}>
-      <Menu.Item icon={<UserOutlined />} key="signIn">
+      {/* <Menu.Item icon={<UserOutlined />} key="signIn">
         <Link to="/login">Setting</Link>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item icon={<UserOutlined />} key="signUp">
-        <Link to="/login">Account</Link>
+        <Link to="/profile">Account</Link>
       </Menu.Item>
       <Menu.Item onClick={handleSignOut} icon={<LogoutOutlined />} key="signUp">
         Logout

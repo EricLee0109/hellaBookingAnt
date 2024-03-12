@@ -14,6 +14,7 @@ import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import TourDetail from "./components/tourDetail/TourDetail.jsx";
 import PaymentPage from "./payment/PaymentPage.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
+import ProfilePage from "./components/profilePage/ProfilePage.jsx";
 // import { AuthProvider } from "react-auth-kit";
 
 // import './index.css'
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "booking",
         element: <PaymentPage />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
       },
     ],
   },

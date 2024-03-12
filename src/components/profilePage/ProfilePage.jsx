@@ -10,7 +10,7 @@ import {
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const ProfilePage = () => {
+function ProfilePage() {
   const [userProfile, setUserProfile] = useState({
     fullName: "Cathy Chu",
     email: "cchu@myschool.edu",
@@ -153,6 +153,6 @@ const ProfilePage = () => {
       </Content>
     </Layout>
   );
-};
+}
 
 export default ProfilePage;
