@@ -11,7 +11,7 @@ import ErrorPage from "./components/errorPage/ErrorPage.jsx";
 import LoginPage from "./components/loginPage/LoginPage.jsx";
 import Dashboard from "./dashboard/Dashboard.jsx";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
-import TourDetail from "./components/tourDetail/TourDetail.jsx";
+import TourDetail from "./components/tourDetail/tourDetail.jsx";
 import PaymentPage from "./payment/PaymentPage.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
 import ProfilePage from "./components/profilePage/ProfilePage.jsx";
