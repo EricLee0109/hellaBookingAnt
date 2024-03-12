@@ -16,19 +16,18 @@ const ProfilePage = () => {
     email: "cchu@myschool.edu",
     studentId: "stu123456",
   });
-  const [editMode, setEditMode] = useState(false); // State để theo dõi trạng thái chỉnh sửa
-
+  const [editMode, setEditMode] = useState(false);
   const handleFormChange = (changedValues, allValues) => {
     setUserProfile(allValues);
   };
 
   const handleEditClick = () => {
-    setEditMode(true); // Kích hoạt chế độ chỉnh sửa
+    setEditMode(true);
   };
 
   const handleFormSubmit = (values) => {
     console.log("Updated Profile:", values);
-    setEditMode(false); // Tắt chế độ chỉnh sửa sau khi cập nhật thành công
+    setEditMode(false);
   };
 
   const cardStyle = {
@@ -62,7 +61,7 @@ const ProfilePage = () => {
               </Title>
               <Text type="secondary">{userProfile.studentId}</Text>
             </div>
-            {!editMode && ( // Hiển thị nút chỉnh sửa nếu không ở chế độ chỉnh sửa
+            {!editMode && (
               <Button
                 icon={<EditOutlined />}
                 style={{
@@ -83,7 +82,7 @@ const ProfilePage = () => {
             onValuesChange={handleFormChange}
             onFinish={handleFormSubmit}
             initialValues={userProfile}
-            hideRequiredMark={!editMode} // Ẩn điều kiện bắt buộc khi ở chế độ chỉnh sửa
+            hideRequiredMark={!editMode}
           >
             <Title level={4}>Basic Information</Title>
             <Form.Item
@@ -95,7 +94,7 @@ const ProfilePage = () => {
             >
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
-                disabled={!editMode} // Không cho chỉnh sửa nếu không ở chế độ chỉnh sửa
+                disabled={!editMode}
               />
             </Form.Item>
             <Form.Item
@@ -143,7 +142,7 @@ const ProfilePage = () => {
                 type="primary"
                 htmlType="submit"
                 block
-                style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }} // A green submit button
+                style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
               >
                 Update Profile
               </Button>
