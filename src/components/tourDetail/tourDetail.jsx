@@ -332,7 +332,7 @@ const TourDetail = () => {
       .then((res) => {
         toast("Pay your payment!");
         console.log(res, "res HandleFinishhh");
-        const tripId = res.data.data.id;
+        const tripId = res?.data.data.id;
         navigate(
           `/payment?tripId=${tripId}&tourId=${
             joinedLocationInTourDetailData.tourId
