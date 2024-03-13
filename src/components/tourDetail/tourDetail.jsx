@@ -35,6 +35,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../api/axios";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const { Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -54,6 +55,8 @@ const TourDetail = () => {
   const VEHICLES_URL = "/vehicles";
   const LOCATION_ACTIVITIES_URL = "/locations/activities";
   const TOURGUIDE_URL = "/tourguides";
+  const userAuth = useAuthUser();
+  const userId = userAuth.id;
 
   const TRIP_URL = "/trips";
   //generate dates
@@ -334,11 +337,13 @@ const TourDetail = () => {
         console.log(res, "res HandleFinishhh");
         const tripId = res?.data.data.id;
         navigate(
-          `/payment?tripId=${tripId}&tourId=${
-            joinedLocationInTourDetailData.tourId
-          }&totalCustomer=${
-            value.totalCustomer
-          }&startDate=${selectedDateApi}&endDate=${endTourDate()}`
+          userId
+            ? `/payment?tripId=${tripId}&tourId=${
+                joinedLocationInTourDetailData.tourId
+              }&totalCustomer=${
+                value.totalCustomer
+              }&startDate=${selectedDateApi}&endDate=${endTourDate()}`
+            : "/login"
         );
       })
       .catch((err) => {

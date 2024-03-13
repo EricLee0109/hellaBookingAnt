@@ -51,15 +51,27 @@ const router = createBrowserRouter([
       },
       {
         path: "payment",
-        element: <PaymentPage />,
+        element: (
+          <RequireAuth>
+            <PaymentPage />
+          </RequireAuth>
+        ),
       },
       {
         path: "paymentSuccess",
-        element: <PaymentSuccess />,
+        element: (
+          <RequireAuth>
+            <PaymentSuccess />
+          </RequireAuth>
+        ),
       },
       {
         path: "profile",
-        element: <ProfilePage />,
+        element: (
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        ),
       },
       {
         path: "search",
