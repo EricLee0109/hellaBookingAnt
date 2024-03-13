@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Layout,
   Form,
@@ -10,6 +10,10 @@ import {
   Modal,
 } from "antd";
 import { CreditCardOutlined } from "@ant-design/icons";
+import axios from "../api/axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { toast } from "react-toastify";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -19,20 +23,70 @@ const PaymentPage = ({ onSubmitPayment }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const [tripsData, setTripsData] = useState([]);
+  const [tourData, setTourData] = useState({});
+  const TOURS_URL = "/tours";
+  const TRIPS_URL = "/trips";
+  const BOOKING_URL = "/bookings";
+  const authUser = useAuthUser();
+  const userId = authUser.id;
+  const navigate = useNavigate();
 
+  //
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const idTrip = queryParams.get("tripId");
+  const tripId = Number(idTrip); //convert to number to compare with tripId in tripsData
+  const tourId = queryParams.get("tourId");
+  const customerTotal = queryParams.get("totalCustomer");
+  const totalCustomer = Number(customerTotal);
+  const startDate = queryParams.get("startDate");
+  const endDate = queryParams.get("endDate");
+
+  // const getTotalPrice = () => {
+  //   return new Intl.NumberFormat("vi-VN", {
+  //     style: "currency",
+  //     currency: "VND",
+  //     minimumFractionDigits: 0,
+  //   }).format(tourData.price * totalCustomer * 1000);
+  // };
+
+  const getTotalPrice = tourData.price * totalCustomer * 1000;
+
+  const getTripById = tripsData.find((trip) => trip.id === tripId);
+  console.log(getTripById, "getTripbyId");
+  console.log(tourData, "tourData");
+
+  //data post
+  console.log(getTripById?.createAt, "cre");
+  console.log(startDate, "st");
+  console.log(endDate, "ed");
+  console.log(getTotalPrice, "price");
+  console.log(tripId, "tripid");
+  console.log(totalCustomer, "cus");
   const onFinish = () => {
-    if (!paymentMethod) {
-      message.error("Please select your payment method!");
-      return;
-    }
-
-    const paymentDetails = {
-      amount: paymentAmount,
-      paymentMethodId: paymentMethod,
-    };
-
-    onSubmitPayment(paymentDetails);
-    setCurrentStep(currentStep + 1);
+    axios
+      .post(BOOKING_URL, {
+        bookingDate: getTripById.createAt,
+        fromDate: startDate,
+        toDate: startDate,
+        userId: userId,
+        totalAmount: getTotalPrice,
+        status: true,
+        tripId: tripId,
+        totalCustomer: totalCustomer,
+      })
+      .then((res) => {
+        toast("Booking successfully!");
+        console.log(res, "res");
+        navigate("/paymentSuccess");
+      })
+      .catch((err) => {
+        toast("Booking Failed!");
+        console.log(err);
+      });
   };
 
   const handlePaymentMethodChange = (value) => {
@@ -51,6 +105,29 @@ const PaymentPage = ({ onSubmitPayment }) => {
   const handleCancel = () => {
     setConfirmModalVisible(false);
   };
+
+  //
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [tripsRes, tourRes] = await Promise.all([
+          // axios.get(TRIPS_URL + `/${tripId}`), // Can't return trip
+          axios.get(TRIPS_URL),
+          axios.get(TOURS_URL + `/${tourId}`),
+        ]);
+        setTripsData(tripsRes.data.data);
+        setTourData(tourRes.data.data);
+        // // Find the booking after setting bookingData
+        // const getBookingByTripId = bookingRes.data.data.find(
+        //   (booking) => booking.tripId === tripId
+        // );
+        // console.log(getBookingByTripId, "getBookingByTripId");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <Layout className="layout">
@@ -93,16 +170,8 @@ const PaymentPage = ({ onSubmitPayment }) => {
                 Payment Information
               </h2>
 
-              <Form.Item label="Amount to Pay">
-                <InputNumber
-                  value={paymentAmount}
-                  onChange={setPaymentAmount}
-                  formatter={(value) =>
-                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                  style={{ width: "100%" }}
-                />
+              <Form.Item name="amount" label="Amount to Pay">
+                {getTotalPrice}
               </Form.Item>
 
               <Form.Item
@@ -115,13 +184,10 @@ const PaymentPage = ({ onSubmitPayment }) => {
                   },
                 ]}
               >
-                <Select
-                  onChange={handlePaymentMethodChange}
-                  placeholder="Select a payment method"
-                >
-                  <Option value="creditCard">Credit Card</Option>
-                  <Option value="paypal">PayPal</Option>
-                  <Option value="bankTransfer">Bank Transfer</Option>
+                <Select placeholder="Select a payment method">
+                  <Option key="vnpay" value="vnpay">
+                    VnPay
+                  </Option>
                 </Select>
               </Form.Item>
 
