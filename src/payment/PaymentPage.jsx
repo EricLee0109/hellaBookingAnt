@@ -30,7 +30,7 @@ const PaymentPage = ({ onSubmitPayment }) => {
   const TRIPS_URL = "/trips";
   const BOOKING_URL = "/bookings";
   const authUser = useAuthUser();
-  const userId = authUser.id;
+  const userId = authUser?.id;
   const navigate = useNavigate();
 
   //
