@@ -13,6 +13,7 @@ import Dashboard from "./dashboard/Dashboard.jsx";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import TourDetail from "./components/tourDetail/tourDetail.jsx";
 import PaymentPage from "./payment/PaymentPage.jsx";
+import PaymentSuccess from "./payment/PaymentSuccess.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
 import ProfilePage from "./components/profilePage/ProfilePage.jsx";
 // import { AuthProvider } from "react-auth-kit";
@@ -49,12 +50,20 @@ const router = createBrowserRouter([
         element: <SearchPage />,
       },
       {
-        path: "booking",
+        path: "payment",
         element: <PaymentPage />,
       },
       {
-        path: "/profile",
+        path: "paymentSuccess",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "search",
+        element: <SearchPage />,
       },
     ],
   },

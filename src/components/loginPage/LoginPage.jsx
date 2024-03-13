@@ -38,6 +38,8 @@ import { useState } from "react";
 import TabPane from "antd/es/tabs/TabPane";
 import { createGlobalStyle } from "antd-style";
 import Navbar from "../navbar/Navbar";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const iconStyles = {
   color: "rgba(0, 0, 0, 0.2)",
@@ -55,42 +57,18 @@ const iconStyles = {
 const Page = () => {
   const [accessType, setAccessType] = useState("login");
   // const [loginSuccess, setLoginSucess] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
   const { token } = theme.useToken();
   const signIn = useSignIn();
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
-  const registerMess = () => {
-    messageApi.open({
-      type: "success",
-      content: "Register Successful!",
-    });
-    setTimeout(messageApi.destroy, 2500);
-  };
-
-  const loginLoading = () => {
-    messageApi.open({
-      type: "loading",
-      content: "Login in progress...",
-    });
-
-    setTimeout(messageApi.destroy, 2500);
-  };
-
-  const loginSuccess = () => {
-    messageApi.open({
-      type: "success",
-      content: "Login Successful!",
-    });
-  };
-
-  const loginError = () => {
-    messageApi.open({
-      type: "error",
-      content: "Login Failed!",
-    });
-  };
+  // const registerMess = () => {
+  //   messageApi.open({
+  //     type: "success",
+  //     content: "Register Successful!",
+  //   });
+  //   setTimeout(messageApi.destroy, 2500);
+  // };
 
   // const values = {
   //   email: "dmtan1510@gmail.com",
@@ -101,36 +79,41 @@ const Page = () => {
     {
       accessType === "login";
     }
+    toast("Processing...");
     axios
       .post(accessType === "login" ? "/signIn" : "/signUp", values)
       .then((res) => {
         console.log("res: ", res);
-        message.loading("Login in progress...", 2.5);
+        toast.dismiss();
         signIn({
           auth: {
             token: res.data.token.accessToken,
             type: "Bearer",
           },
           // refresh: res.data.token.refreshToken,
-          userState: { email: values.email },
+          userState: { email: values.email, id: res.data.userData.id },
         });
-        if (res.data.status === 200) {
-          messageApi.success("Login successful!");
-          navigate("/");
-        } else {
-          messageApi.error("Login failed!");
-          redirect("/");
-        }
 
         // setIsLoginModalVisible(false);
-        if (isAuthenticated) {
-          registerMess();
-          navigate(accessType === "login" && "/");
-        } else {
-          navigate("/login");
+        if (res.data.statusCode === 200 && accessType === "login") {
+          //login success
+          toast(res.data.status);
+          navigate("/");
+        } else if (res.data.statusCode === 409 && accessType === "login") {
+          toast(res.data.message);
+        } else if (res.data.statusCode === 201 && accessType === "register") {
+          //register success
+          window.location.reload();
+          toast(res.data.status);
+        } else if (res.data.stautsCode === 500 && accessType === "register") {
+          toast(res.data.message);
         }
       })
       .catch((err) => {
+        if (err?.response.status === 409) {
+          toast(err?.response.data.message);
+        }
+        // toast(accessType === "login" ? "Login failed!" : "Register failed!");
         console.log("Error: ", err);
       });
   };
@@ -162,7 +145,6 @@ const Page = () => {
         height: "100vh",
       }}
     >
-      {contextHolder}
       {/* <GlobalStyle /> */}
       <LoginFormPage
         className="login-form-page"

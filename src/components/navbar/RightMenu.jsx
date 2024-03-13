@@ -3,6 +3,7 @@ import { Button, Menu } from "antd";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { Link, redirect, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function RightMenu({ mode }) {
   const authUser = useAuthUser();
@@ -11,6 +12,9 @@ function RightMenu({ mode }) {
 
   const handleSignOut = () => {
     signOut();
+    navigate("/");
+    window.location.reload();
+    setTimeout((toast.success("You have been signed out"), 3000));
   };
 
   console.log(authUser, "authUser");

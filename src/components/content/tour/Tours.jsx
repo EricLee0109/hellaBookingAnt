@@ -24,23 +24,6 @@ function Tours() {
   const joinedLocationTour = []; // Join the locationInTour and joinedData
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [toursResponse, locationInToursResponse] = await Promise.all([
-          axios.get(TOURS_URL),
-          axios.get(LOCATION_IN_TOUR_URL),
-        ]);
-        setToursData(toursResponse.data.data);
-        setLocationInToursData(locationInToursResponse.data.data);
-        console.log(locationInToursResponse.data, "locationInToursData");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
-
   const handleCardClick = (tour) => {
     setVisible(!visible);
     setSelectedTour(tour);
@@ -121,87 +104,22 @@ function Tours() {
     );
   });
 
-  const modalChildren = () => {
-    // if (locationInTour.tourId === selectedTour.tourId) {
-    return (
-      <div>
-        <div style={{ width: 200 }}>
-          <Image
-            width="100%"
-            src={
-              "https://res.cloudinary.com/dtlvihfka/image/upload/v1709136569/samples/animals/cat.jpg"
-            }
-            alt="image"
-          />
-        </div>
-        {selectedTour && (
-          <div>
-            <Typography.Title level={2}>
-              Name:&nbsp;
-              {selectedTour?.tourName}
-            </Typography.Title>
-            <Typography.Paragraph>
-              Type:&nbsp;
-              {selectedTour?.tourType}
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              Price:&nbsp;
-              {selectedTour?.price}
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              Time:&nbsp;
-              {selectedTour?.duration}
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              Description:&nbsp;
-              {selectedTour?.description}
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              From:&nbsp;
-              {selectedTour?.startCity}
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              To:&nbsp;
-              {selectedTour?.endCity}
-            </Typography.Paragraph>
-          </div>
-        )}
-        {selectedTour.tourId &&
-          joinedLocationTour.map((locationInTour, i) => (
-            <div key={i}>
-              {selectedTour.tourId === locationInTour.tourId &&
-                Array.isArray(locationInTour.locationInTour) &&
-                locationInTour.locationInTour.map((location, j) => (
-                  <div key={j}>
-                    <Typography.Title level={3}>
-                      Locations In Tour
-                    </Typography.Title>
-                    <Typography.Paragraph>
-                      Time:&nbsp;
-                      {location.duration}
-                    </Typography.Paragraph>
-                    <Typography.Paragraph>
-                      Description:&nbsp;
-                      {location.description}
-                    </Typography.Paragraph>
-                    <Typography.Paragraph>
-                      From:&nbsp;
-                      {location.startCity}
-                    </Typography.Paragraph>
-                    <Typography.Paragraph>
-                      To:&nbsp;
-                      {location.endCity}
-                    </Typography.Paragraph>
-                  </div>
-                ))}
-            </div>
-          ))}
-      </div>
-
-      // }
-      // return null;
-    );
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [toursResponse, locationInToursResponse] = await Promise.all([
+          axios.get(TOURS_URL),
+          axios.get(LOCATION_IN_TOUR_URL),
+        ]);
+        setToursData(toursResponse.data.data);
+        setLocationInToursData(locationInToursResponse.data.data);
+        console.log(locationInToursResponse.data, "locationInToursData");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   console.log(selectedTour, "selectedTour");
   return (

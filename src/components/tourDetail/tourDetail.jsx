@@ -330,9 +330,16 @@ const TourDetail = () => {
         tourGuideId: value.tourGuide,
       })
       .then((res) => {
-        toast("Booking successfully!");
+        toast("Pay your payment!");
         console.log(res, "res HandleFinishhh");
-        navigate("/");
+        const tripId = res.data.data.id;
+        navigate(
+          `/payment?tripId=${tripId}&tourId=${
+            joinedLocationInTourDetailData.tourId
+          }&totalCustomer=${
+            value.totalCustomer
+          }&startDate=${selectedDateApi}&endDate=${endTourDate()}`
+        );
       })
       .catch((err) => {
         alert("Booking failed!");
@@ -810,6 +817,7 @@ const TourDetail = () => {
                                           Total Price
                                         </Form.Item>
                                         <Form.Item
+                                          name="totalPrice"
                                           style={{
                                             fontSize: "20px",
                                             color: "#cf1322",

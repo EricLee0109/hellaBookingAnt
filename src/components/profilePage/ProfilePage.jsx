@@ -1,21 +1,50 @@
-import React, { useState } from "react";
-import { Layout, Avatar, Card, Form, Input, Button, Typography } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Layout,
+  Avatar,
+  Card,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Space,
+} from "antd";
 import {
   UserOutlined,
   EditOutlined,
   MailOutlined,
   LockOutlined,
+  FileImageOutlined,
+  PhoneOutlined,
+  ManOutlined,
+  WomanOutlined,
+  PropertySafetyOutlined,
 } from "@ant-design/icons";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import axios from "../../api/axios";
+import { toast } from "react-toastify";
+import bcrypt from "bcryptjs";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function ProfilePage() {
+  const [form] = Form.useForm();
+  const authUser = useAuthUser();
+  const userId = authUser.id;
+  const USER_URL = "/users";
+  const [userData, setUserData] = useState({});
   const [userProfile, setUserProfile] = useState({
-    fullName: "Cathy Chu",
-    email: "cchu@myschool.edu",
-    studentId: "stu123456",
+    fullName: "",
+    email: "",
+    image: "",
+    gender: "",
+    password: "",
+    phone: "",
+    roleId: null,
   });
+  // console.log(userProfile, "userProfile");
   const [editMode, setEditMode] = useState(false); // State để theo dõi trạng thái chỉnh sửa
 
   const handleFormChange = (changedValues, allValues) => {
@@ -29,6 +58,21 @@ function ProfilePage() {
   const handleFormSubmit = (values) => {
     console.log("Updated Profile:", values);
     setEditMode(false); // Tắt chế độ chỉnh sửa sau khi cập nhật thành công
+    axios
+      .patch(USER_URL + `/${userId}`, {
+        id: userId,
+        // password: values.password,
+        // email: values.email,
+        fullName: values.fullName,
+        gender: values.gender,
+        phone: values.phone,
+        image: values.image,
+      })
+      .then((res) => {
+        toast("Update profile successfully!");
+        console.log(res, "res Updateee");
+      })
+      .catch((err) => console.log(err, "err"));
   };
 
   const cardStyle = {
@@ -39,6 +83,31 @@ function ProfilePage() {
     backgroundColor: "white",
   };
 
+  useEffect(() => {
+    // Call API to get user information
+    axios
+      .get(USER_URL + `/${userId}`)
+      .then((res) => {
+        setUserData(res.data.data);
+        console.log(userData, "userData");
+      })
+      .catch((err) => console.log(err, "err User"));
+    form.setFieldsValue({
+      fullName: userData.fullName,
+      email: userData.email,
+      image: userData.image,
+      gender: userData.gender,
+      password: userData.password,
+      phone: userData.phone,
+      roleId: userData.roleId,
+    });
+  }, [userData._id, form]);
+  let checkPass = bcrypt.compareSync(
+    "khoa0109",
+    "$2a$10$djyvlxzbX8MEriB4ErJT5eHWP3l/OfUVqCblLaD3aGT.Au1I97tnC"
+  );
+  // result will be true if the passwords match, false otherwise
+  console.log(checkPass, "Pass check");
   return (
     <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
       <Content style={{ padding: "50px", maxWidth: "100%" }}>
@@ -51,25 +120,20 @@ function ProfilePage() {
               marginBottom: "20px",
             }}
           >
-            <Avatar
-              size={64}
-              src="https://i.pinimg.com/236x/06/cd/66/06cd66bd82cddff2ba1cb8f2f4f6e92a.jpg"
-              icon={<UserOutlined />}
-            />
+            <Avatar size={64} src={userData.image} icon={<UserOutlined />} />
             <div style={{ flexGrow: 1, marginLeft: "20px" }}>
               <Title level={2} style={{ marginBottom: "8px" }}>
-                {userProfile.fullName}
+                {userData.fullName}
               </Title>
-              <Text type="secondary">{userProfile.studentId}</Text>
+              <Text type="secondary">{userData.email}</Text>
             </div>
             {!editMode && ( // Hiển thị nút chỉnh sửa nếu không ở chế độ chỉnh sửa
               <Button
                 icon={<EditOutlined />}
+                type="primary"
                 style={{
-                  alignSelf: "start",
-                  backgroundColor: "#1890ff",
-                  borderColor: "#1890ff",
-                  color: "white",
+                  alignSelf: "end",
+                  width: "150px",
                 }}
                 onClick={handleEditClick}
               >
@@ -79,10 +143,11 @@ function ProfilePage() {
           </div>
 
           <Form
+            form={form}
             layout="vertical"
-            onValuesChange={handleFormChange}
+            // onValuesChange={handleFormChange}
             onFinish={handleFormSubmit}
-            initialValues={userProfile}
+            // initialValues={userProfile}
             hideRequiredMark={!editMode} // Ẩn điều kiện bắt buộc khi ở chế độ chỉnh sửa
           >
             <Title level={4}>Basic Information</Title>
@@ -94,12 +159,12 @@ function ProfilePage() {
               ]}
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<UserOutlined />}
                 disabled={!editMode} // Không cho chỉnh sửa nếu không ở chế độ chỉnh sửa
               />
             </Form.Item>
             <Form.Item
-              label="Email Address"
+              label="Email"
               name="email"
               rules={[
                 {
@@ -109,23 +174,9 @@ function ProfilePage() {
                 },
               ]}
             >
-              <Input
-                prefix={<MailOutlined className="site-form-item-icon" />}
-                disabled={!editMode}
-              />
+              <Input prefix={<MailOutlined />} disabled={true} />
             </Form.Item>
-            <Form.Item
-              label="Student ID"
-              name="studentId"
-              rules={[
-                { required: true, message: "Please input your student ID!" },
-              ]}
-            >
-              <Input
-                prefix={<EditOutlined className="site-form-item-icon" />}
-                disabled={!editMode}
-              />
-            </Form.Item>
+
             <Form.Item
               label="Password"
               name="password"
@@ -133,20 +184,77 @@ function ProfilePage() {
                 { required: true, message: "Please input your password!" },
               ]}
             >
-              <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+              <Input.Password prefix={<LockOutlined />} disabled={true} />
+            </Form.Item>
+            <Form.Item
+              label="Avatar Image"
+              name="image"
+              // rules={[
+              //   { required: true, message: "Please input your image!" },
+              // ]}
+            >
+              <Input prefix={<FileImageOutlined />} disabled={!editMode} />
+            </Form.Item>
+            <Form.Item
+              label="Phone Number"
+              name="phone"
+              rules={[
+                { required: true, message: "Please input your phone number!" },
+              ]}
+            >
+              <Input prefix={<PhoneOutlined />} disabled={!editMode} />
+            </Form.Item>
+            <Form.Item
+              label="Gender"
+              name="gender"
+              rules={[{ required: true, message: "Please input your gender!" }]}
+            >
+              <Input
+                prefix={
+                  <>
+                    <ManOutlined />
+                    <WomanOutlined />
+                  </>
+                }
                 disabled={!editMode}
               />
             </Form.Item>
+            <Form.Item
+              label="Role"
+              name="roleId"
+              rules={[
+                { required: true, message: "Please input your role ID!" },
+              ]}
+            >
+              <Input prefix={<PropertySafetyOutlined />} disabled={true} />
+            </Form.Item>
             {editMode && (
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }} // A green submit button
-              >
-                Update Profile
-              </Button>
+              <Space direction="horizontal" size={180}>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  onClick={() => setEditMode(false)}
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#f5222d",
+                    borderColor: "#f5222d",
+                  }}
+                >
+                  Back
+                </Button>
+                {/* <div style={{ width: 20 }} /> */}
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#52c41a",
+                    borderColor: "#52c41a",
+                  }} // A green submit button
+                >
+                  Update Profile
+                </Button>
+              </Space>
             )}
           </Form>
         </Card>
