@@ -911,10 +911,14 @@ const TourDetail = () => {
                                               }}
                                               htmlType="submit"
                                               onClick={() => {
-                                                !userData && navigate("/login");
-                                                toast.error(
-                                                  "Your must login first!"
-                                                );
+                                                if (!userData) {
+                                                  navigate("/login");
+                                                  toast.error(
+                                                    "Please login first!"
+                                                  );
+                                                } else {
+                                                  return null;
+                                                }
                                               }}
                                             >
                                               {loading ? (
