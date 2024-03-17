@@ -1,4 +1,5 @@
-import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, UserOutlined, CalendarOutlined } from "@ant-design/icons";
+
 import { Button, Menu } from "antd";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
@@ -26,6 +27,9 @@ function RightMenu({ mode }) {
       <Menu.Item icon={<UserOutlined />} key="signUp">
         <Link to="/profile">Account</Link>
       </Menu.Item>
+      <Menu.Item icon = {<CalendarOutlined />} >
+        <Link to="/schedule">Schedule</Link>
+      </Menu.Item>
       <Menu.Item onClick={handleSignOut} icon={<LogoutOutlined />} key="signUp">
         Logout
       </Menu.Item>
@@ -34,7 +38,7 @@ function RightMenu({ mode }) {
     <Menu mode={mode}>
       <Menu.Item icon={<LoginOutlined />} key="signIn">
         <Link to="/login">Sign In</Link>
-      </Menu.Item>
+      </Menu.Item >
       <Menu.Item icon={<UserOutlined />} key="signUp">
         <Link to="/login">Sign Up</Link>
       </Menu.Item>
