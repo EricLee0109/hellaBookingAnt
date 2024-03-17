@@ -15,25 +15,27 @@ import Navbar from "./components/navbar/Navbar.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import LoginPage from "./components/loginPage/LoginPage.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { AuthContextProvider } from "./context/AuthContext.jsx";
 // import LoginModal from "./components/loginModal/LoginModal.jsx";
 
 function App() {
   const authUser = useAuthUser();
+  const authUserGoogle = localStorage.getItem("userAccessToken");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (authUser) {
-  //     navigate("/");
-  //     toast.info("You are already logged in");
-  //   }
-  // }, [authUser, navigate]);
+  useEffect(() => {
+    if (authUser || authUserGoogle) {
+      navigate("/");
+      toast.info("You are already logged in");
+    }
+  }, [navigate]);
   return (
-    <div>
+    <AuthContextProvider>
       <ToastContainer />
       <Navbar />
       <Outlet />
       {/*-- This is where the child components will be rendered -- */}
-    </div>
+    </AuthContextProvider>
   );
 }
 

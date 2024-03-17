@@ -42,6 +42,7 @@ import { createGlobalStyle } from "antd-style";
 import Navbar from "../navbar/Navbar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoginGoogle from "../../googleSignIn/loginGoogle";
 
 const iconStyles = {
   color: "rgba(0, 0, 0, 0.2)",
@@ -231,7 +232,7 @@ const Page = () => {
                 </span>
               </Divider>
               <Space align="center" size={24}>
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -246,22 +247,9 @@ const Page = () => {
                   <FacebookOutlined
                     style={{ ...iconStyles, color: "#1677FF" }}
                   />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    height: 40,
-                    width: 40,
-                    border: "1px solid " + token.colorPrimaryBorder,
-                    borderRadius: "50%",
-                  }}
-                >
-                  <GoogleOutlined style={{ ...iconStyles, color: "#FF6A10" }} />
-                </div>
-                <div
+                </div> */}
+                <LoginGoogle />
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -274,7 +262,7 @@ const Page = () => {
                   }}
                 >
                   <GithubOutlined style={{ ...iconStyles, color: "#1890ff" }} />
-                </div>
+                </div> */}
               </Space>
             </div>
           )

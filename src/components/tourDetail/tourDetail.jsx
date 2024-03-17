@@ -19,6 +19,8 @@ import {
   Form,
   Skeleton,
   Spin,
+  Space,
+  Alert,
 } from "antd";
 import {
   EnvironmentFilled,
@@ -56,17 +58,21 @@ const TourDetail = () => {
   const [userData, setUserData] = useState([]);
   const [tourGuidesData, setTourGuidesData] = useState([]);
   const [tourGuide, setTourGuide] = useState("");
+  const [locationData, setLocationData] = useState([]);
+  const [cityData, setCityData] = useState([]);
   const TOURS_URL = "/tours";
   const LOCATION_IN_TOUR_URL = "/tours/locations";
   const VEHICLES_URL = "/vehicles";
   const LOCATION_ACTIVITIES_URL = "/locations/activities";
   const TOURGUIDE_URL = "/tourguides";
   const USER_URL = "/users";
+  const TRIP_URL = "/trips";
+  const LOCATION_URL = "/locations";
+  const CITY_URL = "/cities";
   const userAuth = useAuthUser();
   const userId = userAuth?.id;
   const [loading, setLoading] = useState(false);
 
-  const TRIP_URL = "/trips";
   //generate dates
   const [selectedDateApi, setselectedDateApi] = useState("");
   const [selectedDateUi, setselectedDateUi] = useState("");
@@ -187,12 +193,33 @@ const TourDetail = () => {
     (location) => location.tourId === tourDetailData.id
   );
 
+  //Find location by Id
+  const getLocationDetailData = locationData.find(
+    (location) => location.id === locationInTourDetailData.locationId
+  );
+  console.log(getLocationDetailData, "getLocationDetailData");
+  //Find city by Id
+  const getCityInTourDetailData = cityData.find(
+    (city) => city.id === locationInTourDetailData.cityId
+  );
+  console.log(getCityInTourDetailData, "cityInTourDetailData");
+
+  //Find location by joinedLocationInTourDetailData.locationId by Id
+  // const getLocationData = locationData.find(
+  //   (location) => location.id === joinedLocationInTourDetailData.locationId
+  // );
+  // console.log(getLocationData, "getLocationDataaaa");
   //All data in this tour
   const joinedLocationInTourDetailData = {
     ...locationInTourDetailData,
     ...tourDetailData,
+    ...getLocationDetailData,
+    ...getCityInTourDetailData,
   };
-
+  console.log(
+    joinedLocationInTourDetailData,
+    "joinedLocationInTourDetailDataaa"
+  );
   //vehicle in this tour
   const vehicleLocationInTourDetailData = vehicleTypeData.find(
     (vehicle) => vehicle.id === joinedLocationInTourDetailData.vehicleTypeId
@@ -211,6 +238,8 @@ const TourDetail = () => {
     locationActivitiesInTourDetailData,
     "locationActivitiesDetailDataaa"
   );
+
+  //Join location by locationId with locationInTourDetailData
 
   // Filter all locationInTours that include in Tours data
   const joinedLocationInTourDetail = locationInToursData.map((item) => {
@@ -367,6 +396,7 @@ const TourDetail = () => {
       });
   };
 
+  console.log(joinedLocationInTourDetailData, "joinedLocationInTourDetailData");
   //
   useEffect(() => {
     const fetchData = async () => {
@@ -378,6 +408,8 @@ const TourDetail = () => {
           axios.get(VEHICLES_URL),
           axios.get(LOCATION_ACTIVITIES_URL), //how to get by Id?
           axios.get(TOURGUIDE_URL),
+          axios.get(LOCATION_URL),
+          axios.get(CITY_URL),
         ];
 
         if (userId) {
@@ -389,6 +421,8 @@ const TourDetail = () => {
           vehicleTypeRes,
           locationActivitiesRes,
           tourGuidesRes,
+          locationRes,
+          citiRes,
           userRes,
         ] = await Promise.all(requests);
         // setToursData(toursResponse.data.data);
@@ -397,6 +431,8 @@ const TourDetail = () => {
         setVehicleTypeData(vehicleTypeRes.data.data);
         setLocationActivitiesData(locationActivitiesRes.data.data);
         setTourGuidesData(tourGuidesRes.data.data);
+        setLocationData(locationRes.data.data);
+        setCityData(citiRes.data.data);
         if (userRes) {
           setUserData(userRes.data.data);
         } else {
@@ -410,10 +446,18 @@ const TourDetail = () => {
     };
     fetchData();
   }, [id]);
+  console.log(locationData, "locationData");
+  console.log(cityData, "cityData");
   return (
     <Layout className="landing-page">
       {loading ? (
-        <Skeleton title="hello" active />
+        <Spin style={{ width: "100%", height: "100vh" }} tip="Loading...">
+          <Alert
+            message="Please wait a moment"
+            description="wait."
+            type="info"
+          />
+        </Spin>
       ) : (
         <>
           <Content style={{ padding: "0 100px" }}>
@@ -445,10 +489,21 @@ const TourDetail = () => {
                           >
                             Tour - {joinedLocationInTourDetailData.tourName}
                             <div>
-                              <Typography.Text style={{ color: "#feffee" }}>
-                                <EnvironmentOutlined />
-                                &nbsp; Tour - Location Name - Location Address
-                              </Typography.Text>
+                              <div>
+                                <Typography.Text style={{ color: "#feffee" }}>
+                                  <EnvironmentOutlined />
+                                  &nbsp; Location Name -{" "}
+                                  {joinedLocationInTourDetailData.locationName}
+                                </Typography.Text>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <Typography.Text style={{ color: "#feffee" }}>
+                                  <EnvironmentOutlined />
+                                  &nbsp; Location Address -{" "}
+                                  {
+                                    joinedLocationInTourDetailData.locationAddress
+                                  }
+                                </Typography.Text>
+                              </div>
                               <div>
                                 <Typography.Text style={{ color: "#feffee" }}>
                                   <ClockCircleOutlined />
@@ -559,6 +614,10 @@ const TourDetail = () => {
                           style={{
                             border: "1px solid #1e1e1e",
                             margin: "10px",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                            borderColor: "#ccc",
                           }}
                           key={i.toString()}
                         >
@@ -722,7 +781,7 @@ const TourDetail = () => {
                   marginTop: "-90px",
                 }}
               >
-                <Card title="Shared Tour - Departing from Phu Quoc">
+                <Card title="Book your trip!">
                   <Row gutter={16}>
                     <Col span={24}>
                       <Button
@@ -762,22 +821,26 @@ const TourDetail = () => {
                                 <div
                                   style={{
                                     display: "flex",
+                                    flexDirection: "column",
                                     justifyContent: "space-between",
                                     alignItems: "center",
                                     backgroundColor: "#fff",
                                     padding: "20px",
-                                    borderRadius: "5px",
+                                    borderRadius: "10px",
                                     margin: "20px",
+                                    boxShadow:
+                                      "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                                    border: "1px solid #ccc",
                                   }}
                                 >
-                                  <div style={{ maxWidth: "80%" }}>
+                                  <div
+                                    style={{ maxWidth: "100%", width: "100%" }}
+                                  >
                                     <Title
                                       level={3}
                                       style={{ color: "#330099", margin: 0 }}
                                     >
                                       {tourPrice[selectedDateUi]} Shared tour
-                                      for up to 40 guests - Departure from HCMC
-                                      | Vietjet Air Flight
                                     </Title>
                                     <Text style={{ color: "#D3D3D3" }}>
                                       Price for {selectedDateUi}
@@ -788,12 +851,12 @@ const TourDetail = () => {
                                         backgroundColor: "#fff",
                                         padding: "24px",
                                         borderRadius: "8px",
-
                                         marginBottom: "20px",
                                       }}
                                     >
                                       <Col span={24}>
                                         <Form
+                                          style={{ maxWidth: "100%" }}
                                           onFinish={handleFinish}
                                           initialValues={{ totalCustomer: 1 }}
                                         >
