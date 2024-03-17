@@ -16,6 +16,7 @@ import PaymentPage from "./payment/PaymentPage.jsx";
 import PaymentSuccess from "./payment/PaymentSuccess.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
 import ProfilePage from "./components/profilePage/ProfilePage.jsx";
+import Schedule from "./components/scheduleTourGuide/schedule.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 // import { AuthProvider } from "react-auth-kit";
 
@@ -77,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <SearchPage />,
+      },
+      {
+        path: "schedule",
+        element: (
+          <RequireAuth>
+            <Schedule />
+          </RequireAuth>
+        ),
       },
     ],
   },
