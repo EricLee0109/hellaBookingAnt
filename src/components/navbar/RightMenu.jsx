@@ -10,9 +10,13 @@ function RightMenu({ mode }) {
   const signOut = useSignOut();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
+  const handleSignOut = (e) => {
     signOut();
-    navigate("/");
+    console.log(signOut(), "signOut");
+    console.log(authUser, "authUserrrr");
+    if (authUser) {
+      navigate("/");
+    }
     window.location.reload();
     setTimeout((toast.success("You have been signed out"), 3000));
   };
