@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Card,
   Col,
@@ -7,6 +8,7 @@ import {
   Modal,
   Row,
   Skeleton,
+  Spin,
   Typography,
 } from "antd";
 import landmark81 from "../../../img/plan_landmark81.jpg";
@@ -150,7 +152,17 @@ function Tours() {
         </Modal> */}
         <OverPack>
           <QueueAnim key="queue" type="bottom" leaveReverse component={Row}>
-            {loading ? <Skeleton active /> : children}
+            {loading ? (
+              <Spin style={{ width: "100%", height: "100vh" }} tip="Loading...">
+                <Alert
+                  message="Please wait a moment"
+                  description="wait."
+                  type="info"
+                />
+              </Spin>
+            ) : (
+              children
+            )}
             {/** To wrap children in QueueAnim each element must have unique key in order to queueAnim coulde render base on it **/}
           </QueueAnim>
         </OverPack>

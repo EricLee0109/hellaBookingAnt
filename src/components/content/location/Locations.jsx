@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QueueAnim from "rc-queue-anim";
 import OverPack from "rc-scroll-anim/lib/ScrollOverPack";
-import { Row, Col, Skeleton } from "antd";
+import { Row, Col, Skeleton, Spin, Alert } from "antd";
 
 import Tetris from "../../../technology-comp/Tetris";
 import Column from "../../../technology-comp/Column";
@@ -153,7 +153,17 @@ function Locations() {
         <i />
         <OverPack className="page2-content">
           <QueueAnim component={Row} key="queue" type="bottom" leaveReverse>
-            {loading ? <Skeleton active /> : children}
+            {loading ? (
+              <Spin style={{ width: "100%", height: "100vh" }} tip="Loading...">
+                <Alert
+                  message="Please wait a moment"
+                  description="wait."
+                  type="info"
+                />
+              </Spin>
+            ) : (
+              children
+            )}
           </QueueAnim>
         </OverPack>
       </div>

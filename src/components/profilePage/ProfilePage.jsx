@@ -143,6 +143,7 @@ function ProfilePage() {
           </div>
 
           <Form
+            style={{ maxWidth: "100%" }}
             form={form}
             layout="vertical"
             // onValuesChange={handleFormChange}

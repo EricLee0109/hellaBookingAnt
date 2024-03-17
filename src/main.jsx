@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/home/Home.jsx";
 import ErrorPage from "./components/errorPage/ErrorPage.jsx";
 import LoginPage from "./components/loginPage/LoginPage.jsx";
-import Dashboard from "./dashboard/Dashboard.jsx";
+import TestDash from "./dashboard/TestDash.jsx";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import TourDetail from "./components/tourDetail/tourDetail.jsx";
 import PaymentPage from "./payment/PaymentPage.jsx";
@@ -17,6 +17,7 @@ import PaymentSuccess from "./payment/PaymentSuccess.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
 import ProfilePage from "./components/profilePage/ProfilePage.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import Schedule from "./components/scheduleTourGuide/Schedule.jsx";
 // import { AuthProvider } from "react-auth-kit";
 
 // import './index.css'
@@ -77,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <SearchPage />,
+      },
+      {
+        path: "schedule",
+        element: (
+          <RequireAuth>
+            <Schedule />
+          </RequireAuth>
+        ),
       },
     ],
   },
