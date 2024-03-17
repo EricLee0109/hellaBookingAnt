@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { CreditCardOutlined } from "@ant-design/icons";
 import axios from "../api/axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { toast } from "react-toastify";
 
@@ -21,6 +21,7 @@ const { Option } = Select;
 const PaymentPage = ({ onSubmitPayment }) => {
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [vnPayment, setVnPayment] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -53,8 +54,13 @@ const PaymentPage = ({ onSubmitPayment }) => {
   //   }).format(tourData.price * totalCustomer * 1000);
   // };
 
-  const getTotalPrice = tourData.price * totalCustomer * 1000;
-
+  const totalPriceBe = tourData.price * totalCustomer;
+  const getTotalPrice = () => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(tourData.price * totalCustomer);
+  };
   const getTripById = tripsData.find((trip) => trip.id === tripId);
   console.log(getTripById, "getTripbyId");
   console.log(tourData, "tourData");
@@ -63,25 +69,73 @@ const PaymentPage = ({ onSubmitPayment }) => {
   console.log(getTripById?.createAt, "cre");
   console.log(startDate, "st");
   console.log(endDate, "ed");
-  console.log(getTotalPrice, "price");
+  console.log(totalPriceBe, "price");
   console.log(tripId, "tripid");
   console.log(totalCustomer, "cus");
-  const onFinish = () => {
+  const onFinish = (values) => {
     axios
       .post(BOOKING_URL, {
-        bookingDate: getTripById.createAt,
+        bookingDate: getTripById?.createAt,
         fromDate: startDate,
         toDate: startDate,
         userId: userId,
-        totalAmount: getTotalPrice,
+        totalAmount: totalPriceBe,
         status: true,
         tripId: tripId,
         totalCustomer: totalCustomer,
       })
       .then((res) => {
-        toast("Booking successfully!");
-        console.log(res, "res");
-        navigate("/paymentSuccess");
+        toast("Your payment result!");
+        console.log("--------------Booking-----------------");
+        console.log(values.paymentMethod, "paymentMethod");
+        console.log(values.language, "language");
+        console.log(res.data.data, "res Booking");
+        console.log(res.data.data.id, "res Booking");
+        console.log(res.data.data.bookingDate, "res Booking");
+        console.log(totalPriceBe, "res Booking");
+
+        axios
+          .post(
+            "/create_vnpayment",
+            {
+              bookingId: res.data.data.id,
+              bankCode: values.paymentMethod,
+              language: values.language,
+              descript: "Your booking is successfully!",
+            },
+            {
+              headers: {
+                userId: userId,
+              },
+            }
+          )
+          .then((res) => {
+            // navigate("/paymentSuccess");
+            console.log("--------------Payment-----------------");
+            console.log(res.data, "res vnPayment");
+            if (res.data) {
+              window.open(res.data, "_blank");
+            }
+            // axios
+            //   .get("/vnpay_ipn", { params: { vnPay: res.data } })
+            //   .then((res) => {
+            //     console.log(res.data, "res GET Param Vnpay");
+            //     if (res.data.RspCode === "97") {
+            //       redirect("/paymentSuccess");
+            //     }
+            //   });
+
+            // axios
+            //   .get("/vnpay_ipn", { params: { vnPay: res.data.RspCode } })
+            //   .then((res) => {
+            //     navigate("/paymentSuccess", { state: res.data });
+            //     console.log(res.data.RspCode, "res GET Param Vnpay IPN");
+            //   });
+            // navigate("/paymentProcess", { state: res.data });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         toast("Booking Failed!");
@@ -171,7 +225,7 @@ const PaymentPage = ({ onSubmitPayment }) => {
               </h2>
 
               <Form.Item name="amount" label="Amount to Pay">
-                {getTotalPrice}
+                {getTotalPrice()}
               </Form.Item>
 
               <Form.Item
@@ -185,8 +239,31 @@ const PaymentPage = ({ onSubmitPayment }) => {
                 ]}
               >
                 <Select placeholder="Select a payment method">
-                  <Option key="vnpay" value="vnpay">
-                    VnPay
+                  <Option key="VNBANK" value="VNBANK">
+                    Thanh toán qua ATM-Tài khoản ngân hàng nội địa
+                  </Option>
+                  <Option key="INTCARD" value="INTCARD">
+                    Thanh toán qua thẻ quốc tế
+                  </Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="language"
+                label="Select Language"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select your languages!",
+                  },
+                ]}
+              >
+                <Select placeholder="Select your languages">
+                  <Option key="vn" value="vn">
+                    Tiếng Việt
+                  </Option>
+                  <Option key="en" value="en">
+                    English
                   </Option>
                 </Select>
               </Form.Item>
@@ -194,7 +271,8 @@ const PaymentPage = ({ onSubmitPayment }) => {
               <Form.Item>
                 <Button
                   type="primary"
-                  onClick={showConfirmModal}
+                  // onClick={showConfirmModal}
+                  htmlType="submit"
                   style={{
                     width: "100%",
                     backgroundColor: "#FFA500",
@@ -206,6 +284,7 @@ const PaymentPage = ({ onSubmitPayment }) => {
                 >
                   Make Payment
                 </Button>
+                {vnPayment && <a href={vnPayment}>Pay your bills here!</a>}
               </Form.Item>
             </Form>
           </div>

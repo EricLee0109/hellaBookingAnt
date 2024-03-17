@@ -2,6 +2,7 @@ import {
   FacebookOutlined,
   GithubOutlined,
   GoogleOutlined,
+  LoadingOutlined,
   LockOutlined,
   ManOutlined,
   PhoneOutlined,
@@ -23,6 +24,7 @@ import {
   Divider,
   Form,
   Space,
+  Spin,
   Tabs,
   message,
   theme,
@@ -61,6 +63,7 @@ const Page = () => {
   const signIn = useSignIn();
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   // const registerMess = () => {
   //   messageApi.open({
@@ -75,6 +78,7 @@ const Page = () => {
   //   password: "tan15102002",
   // };
   const handleFinish = (values) => {
+    setLoading(true);
     console.log(values);
     {
       accessType === "login";
@@ -110,8 +114,8 @@ const Page = () => {
         }
       })
       .catch((err) => {
-        if (err?.response.status === 409) {
-          toast(err?.response.data.message);
+        if (err.response?.status === 409) {
+          toast(err.response.data.message);
         }
         // toast(accessType === "login" ? "Login failed!" : "Register failed!");
         console.log("Error: ", err);
@@ -150,7 +154,23 @@ const Page = () => {
         className="login-form-page"
         submitter={{
           searchConfig: {
-            submitText: accessType === "login" ? "Sign in" : "Sign up",
+            submitText:
+              (accessType === "login" || accessType === "register") &&
+              loading ? (
+                <Spin
+                  indicator={
+                    <LoadingOutlined
+                      style={{ fontSize: 24, color: "#fefefe" }}
+                      spin
+                    />
+                  }
+                />
+              ) : // <LoadingOutlined />
+              accessType === "login" ? (
+                "Sign In"
+              ) : (
+                "Sign up"
+              ),
           },
         }}
         onFinish={handleFinish}

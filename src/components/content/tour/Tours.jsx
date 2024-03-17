@@ -1,4 +1,14 @@
-import { Button, Card, Col, Flex, Image, Modal, Row, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Flex,
+  Image,
+  Modal,
+  Row,
+  Skeleton,
+  Typography,
+} from "antd";
 import landmark81 from "../../../img/plan_landmark81.jpg";
 import sunPlaza from "../../../img/plan_sunPlaza.jpg";
 import QueueAnim from "rc-queue-anim";
@@ -23,6 +33,7 @@ function Tours() {
   const joinedLocationsInTourData = []; // Join the tour and locationInTours data
   const joinedLocationTour = []; // Join the locationInTour and joinedData
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleCardClick = (tour) => {
     setVisible(!visible);
@@ -49,18 +60,17 @@ function Tours() {
     // }; // if we use that way, tour.id will be overrided by locationInTour.tourId
 
     // Rename the id property in tour to tourId
-    // const { id: tourId, ...restOfTour } = tours;
+    const { image: img, ...restOfTour } = tours; //destructuring the tour object and rename the image property to img to get image from tourData
     // const { ...locationInToursData } = locationsInTour;
     const joinedObject = {
-      // ...restOfTour,
-      // tourId,
+      ...restOfTour,
+      img,
       // location: locations,
-      ...tours,
+      // ...tours,
       ...locationsInTour,
     }; //this way, we can keep both id and tourId (because if tour.id does not have locationInTour, it will be undefined and will not be added to the joinedObject)
     joinedLocationsInTourData.push(joinedObject);
   }
-  console.log(joinedLocationsInTourData, "joinedDataaa");
   // console.log(locationInToursData, "locationsInTourData");
   // console.log(toursData, "toursData");
   // console.log(filteredData, "filteredData");
@@ -77,7 +87,8 @@ function Tours() {
   // }
 
   //Joineddata locationInTour with locations, tours
-
+  console.log(toursData, "toursData");
+  console.log(joinedLocationsInTourData, "joinedLocationsInTourData");
   const children = joinedLocationsInTourData.slice(0, 4).map((tour, i) => {
     const colProps = {
       //use to responsive col
@@ -88,13 +99,12 @@ function Tours() {
       <Col onClick={() => handleCardClick(tour)} {...colProps} key={i}>
         <Card
           hoverable
-          style={{ width: 200 }}
+          style={{ width: 250, height: 400, margin: 10 }}
           cover={
             <img
+              style={{ width: 250, height: 300, borderRadius: 1 }}
               alt="image"
-              src={
-                "https://res.cloudinary.com/dtlvihfka/image/upload/v1709136569/samples/animals/cat.jpg"
-              }
+              src={tour.img}
             />
           }
         >
@@ -105,6 +115,7 @@ function Tours() {
   });
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const [toursResponse, locationInToursResponse] = await Promise.all([
@@ -114,6 +125,7 @@ function Tours() {
         setToursData(toursResponse.data.data);
         setLocationInToursData(locationInToursResponse.data.data);
         console.log(locationInToursResponse.data, "locationInToursData");
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -127,7 +139,10 @@ function Tours() {
       <div className="page">
         <h1>Plan Your Pefect Trip</h1>
         <i />
-        <Button style={{ width: 180, marginLeft: "80%" }}>
+        <Button
+          onClick={() => navigate("/search")}
+          style={{ width: 180, marginLeft: "80%" }}
+        >
           See more places
         </Button>
         {/* <Modal onCancel={handleCancel} onOk={handleOk} open={visible}>
@@ -135,7 +150,7 @@ function Tours() {
         </Modal> */}
         <OverPack>
           <QueueAnim key="queue" type="bottom" leaveReverse component={Row}>
-            {children}
+            {loading ? <Skeleton active /> : children}
             {/** To wrap children in QueueAnim each element must have unique key in order to queueAnim coulde render base on it **/}
           </QueueAnim>
         </OverPack>

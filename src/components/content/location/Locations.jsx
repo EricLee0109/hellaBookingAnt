@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QueueAnim from "rc-queue-anim";
 import OverPack from "rc-scroll-anim/lib/ScrollOverPack";
-import { Row, Col } from "antd";
+import { Row, Col, Skeleton } from "antd";
 
 import Tetris from "../../../technology-comp/Tetris";
 import Column from "../../../technology-comp/Column";
@@ -75,6 +75,7 @@ function Locations() {
   const [hover, setHover] = useState(null);
   const [locationData, setLocationData] = useState([]);
   const LOCATIONS_URL = "/locations";
+  const [loading, setLoading] = useState(false);
 
   const handleMouseEnter = () => {
     setHover(hover);
@@ -84,12 +85,16 @@ function Locations() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(LOCATIONS_URL)
-      .then((res) => setLocationData(res.data.data))
+      .then((res) => {
+        setLocationData(res.data.data);
+        setLoading(false);
+      })
       .catch((err) => console.log(err));
   }, []);
-
+  console.log(locationData, "locationData");
   // state = {
   //   hover: null,
   // };
@@ -103,23 +108,23 @@ function Locations() {
   //     hover: null,
   //   });
   // };
-  const children = locationData.slice(0, 6).map((item, i) => {
+  const children = locationData.slice(0, 6).map((location, i) => {
     const colProps = {
       //use to responsive col
-      md: item.full ? 24 : 8,
+      md: location.full ? 24 : 8,
       xs: 24,
     };
     return (
       <Col {...colProps} key={i.toString()} className="page2-item-wrapper">
         <div
-          className={`page2-item${item.full ? " full" : ""}`}
+          className={`page2-item${location.full ? " full" : ""}`}
           onMouseEnter={() => {
-            handleMouseEnter(item.title);
+            handleMouseEnter(location.title);
           }}
           onMouseLeave={handleMouseLeave}
         >
           {/* <div className="page2-item-bg">
-            {item.Bg && React.createElement(item.Bg, hover === item.title)}
+            {location.Bg && React.createElement(location.Bg, hover === location.title)}
           </div> */}
           <div className="page2-item-desc">
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -132,9 +137,9 @@ function Locations() {
                 />
               </div>
             </div>
-            <h4>{item.locationName}</h4>
-            <p>{item.locationAddress}</p>
-            <p className="page2-item-links">{item.links}</p>
+            <h4>{location.locationName}</h4>
+            <p>{location.locationAddress}</p>
+            <p className="page2-item-links">{location.links}</p>
           </div>
         </div>
       </Col>
@@ -148,7 +153,7 @@ function Locations() {
         <i />
         <OverPack className="page2-content">
           <QueueAnim component={Row} key="queue" type="bottom" leaveReverse>
-            {children}
+            {loading ? <Skeleton active /> : children}
           </QueueAnim>
         </OverPack>
       </div>

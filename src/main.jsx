@@ -17,6 +17,7 @@ import PaymentSuccess from "./payment/PaymentSuccess.jsx";
 import SearchPage from "./components/search/SearchPage.jsx";
 import ProfilePage from "./components/profilePage/ProfilePage.jsx";
 import Schedule from "./components/scheduleTourGuide/schedule.jsx";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 // import { AuthProvider } from "react-auth-kit";
 
 // import './index.css'
