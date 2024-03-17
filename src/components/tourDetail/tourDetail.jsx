@@ -17,6 +17,8 @@ import {
   Image,
   Select,
   Form,
+  Skeleton,
+  Spin,
 } from "antd";
 import {
   EnvironmentFilled,
@@ -30,14 +32,17 @@ import {
   CarOutlined,
   StarOutlined,
   ClockCircleOutlined,
+  KeyOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../api/axios";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import Footer from "../footer/Footer";
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const TourDetail = () => {
@@ -48,6 +53,7 @@ const TourDetail = () => {
   const [tourDetailData, setTourDetailData] = useState({});
   const [vehicleTypeData, setVehicleTypeData] = useState([]);
   const [locationActivitiesData, setLocationActivitiesData] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [tourGuidesData, setTourGuidesData] = useState([]);
   const [tourGuide, setTourGuide] = useState("");
   const TOURS_URL = "/tours";
@@ -55,8 +61,10 @@ const TourDetail = () => {
   const VEHICLES_URL = "/vehicles";
   const LOCATION_ACTIVITIES_URL = "/locations/activities";
   const TOURGUIDE_URL = "/tourguides";
+  const USER_URL = "/users";
   const userAuth = useAuthUser();
-  const userId = userAuth.id;
+  const userId = userAuth?.id;
+  const [loading, setLoading] = useState(false);
 
   const TRIP_URL = "/trips";
   //generate dates
@@ -235,7 +243,7 @@ const TourDetail = () => {
       style: "currency",
       currency: "VND",
       minimumFractionDigits: 0,
-    }).format(joinedLocationInTourDetailData.price * adultCount * adultPrice);
+    }).format(joinedLocationInTourDetailData.price * adultCount);
   };
 
   const tourPrice = () => {
@@ -243,7 +251,7 @@ const TourDetail = () => {
       tyle: "currency",
       currency: "VND",
       minimumFractionDigits: 0,
-    }).format(joinedLocationInTourDetailData.price * 1000);
+    }).format(joinedLocationInTourDetailData.price);
   };
 
   const currentDates = uiDates.slice(currentIndex, currentIndex + displayCount);
@@ -323,6 +331,7 @@ const TourDetail = () => {
 
   const handleFinish = (value) => {
     console.log(value, "valueee");
+    setLoading(true);
     axios
       .post(TRIP_URL, {
         tourId: joinedLocationInTourDetailData.tourId,
@@ -333,21 +342,27 @@ const TourDetail = () => {
         tourGuideId: value.tourGuide,
       })
       .then((res) => {
-        toast("Pay your payment!");
-        console.log(res, "res HandleFinishhh");
+        userData && userData.roleId === 0
+          ? toast("Pay your bills!")
+          : userData.roleId === 1
+          ? toast.error("Tour Guide can not booking")
+          : toast.error("Please login to continue");
+        console.log(res.data.data, "Trip Response");
         const tripId = res?.data.data.id;
         navigate(
-          userId
+          userData && userData.roleId === 0
             ? `/payment?tripId=${tripId}&tourId=${
                 joinedLocationInTourDetailData.tourId
               }&totalCustomer=${
                 value.totalCustomer
               }&startDate=${selectedDateApi}&endDate=${endTourDate()}`
-            : "/login"
+            : !userData
+            ? "/login"
+            : userData.roleId === 1 && "/"
         );
       })
       .catch((err) => {
-        alert("Booking failed!");
+        toast.error("Booking failed!");
         console.log(err, "err HandleFinishhh");
       });
   };
@@ -356,26 +371,38 @@ const TourDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        const requests = [
+          axios.get(LOCATION_IN_TOUR_URL),
+          axios.get(TOURS_URL + `/${id}`),
+          axios.get(VEHICLES_URL),
+          axios.get(LOCATION_ACTIVITIES_URL), //how to get by Id?
+          axios.get(TOURGUIDE_URL),
+        ];
+
+        if (userId) {
+          requests.push(axios.get(USER_URL + `/${userId}`));
+        }
         const [
           locationInToursRes,
           tourDetailRes,
           vehicleTypeRes,
           locationActivitiesRes,
           tourGuidesRes,
-        ] = await Promise.all([
-          // axios.get(TOURS_URL),
-          axios.get(LOCATION_IN_TOUR_URL),
-          axios.get(`/tours/${id}`),
-          axios.get(VEHICLES_URL),
-          axios.get(LOCATION_ACTIVITIES_URL), //how to get by Id?
-          axios.get(TOURGUIDE_URL),
-        ]);
+          userRes,
+        ] = await Promise.all(requests);
         // setToursData(toursResponse.data.data);
         setLocationInToursData(locationInToursRes.data.data);
         setTourDetailData(tourDetailRes.data.data);
         setVehicleTypeData(vehicleTypeRes.data.data);
         setLocationActivitiesData(locationActivitiesRes.data.data);
         setTourGuidesData(tourGuidesRes.data.data);
+        if (userRes) {
+          setUserData(userRes.data.data);
+        } else {
+          setUserData(null);
+        }
+        setLoading(false);
         // console.log(vehicleTypeData, "tourDetailNeeeeee");
       } catch (error) {
         console.log(error);
@@ -385,489 +412,543 @@ const TourDetail = () => {
   }, [id]);
   return (
     <Layout className="landing-page">
-      <Content style={{ padding: "0 100px" }}>
-        <div className="site-layout-content">
-          <div style={{ marginTop: "70px", marginBottom: "50px" }}>
-            <Carousel
-              autoplay
-              autoplaySpeed={4000}
-              style={{ width: "92%", height: "600px", margin: "0 auto" }}
-            >
-              {carouselImages.map((imageGroup, index) => (
-                <div key={index}>
-                  <div style={{ textAlign: "left" }}>
-                    <h1
-                      style={{
-                        fontSize: "2rem",
-                        fontWeight: "bold",
-                        marginBottom: "20px",
-                        display: "flex",
-                        backgroundColor: "rgba(0, 30, 100, 0.9)",
-                        padding: "10px",
-                        borderRadius: "10px",
-                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <Typography.Title level={2} style={{ color: "#feffee" }}>
-                        Tour - {joinedLocationInTourDetailData.tourName}
-                        <div>
-                          <Typography.Text style={{ color: "#feffee" }}>
-                            <EnvironmentOutlined />
-                            &nbsp; Tour - Location Name - Location Address
-                          </Typography.Text>
-                          <div>
-                            <Typography.Text style={{ color: "#feffee" }}>
-                              <ClockCircleOutlined />
-                              &nbsp; Duration -{" "}
-                              {joinedLocationInTourDetailData.duration}
-                            </Typography.Text>
-                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                            <Typography.Text style={{ color: "#feffee" }}>
-                              <CarOutlined />
-                              &nbsp; Vehicle -{" "}
-                              {vehicleLocationInTourDetailData?.vehicleName}
-                            </Typography.Text>
-                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                            <Typography.Text style={{ color: "#feffee" }}>
-                              <StarOutlined />
-                              &nbsp; Capacity -{" "}
-                              {vehicleLocationInTourDetailData?.capacity}
-                            </Typography.Text>
-                          </div>
-                        </div>
-                      </Typography.Title>
-                    </h1>
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        maxWidth: "100%",
-                        // border: "1px solid #ccc",
-                        borderRadius: "5px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Image
-                        src={imageGroup[0]}
-                        alt={`Image ${index + 1}`}
-                        style={{
-                          width: "100%",
-                          height: "350px",
-                          objectFit: "cover",
-                          boxShadow: "2px 1px 4px rgba(0,0,0,0.25)",
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      {imageGroup.slice(1).map((imageUrl, imageIndex) => (
-                        <div
-                          key={imageIndex}
+      {loading ? (
+        <Skeleton title="hello" active />
+      ) : (
+        <>
+          <Content style={{ padding: "0 100px" }}>
+            <div className="site-layout-content">
+              <div style={{ marginTop: "70px", marginBottom: "50px" }}>
+                <Carousel
+                  autoplay
+                  autoplaySpeed={4000}
+                  style={{ width: "92%", height: "600px", margin: "0 auto" }}
+                >
+                  {carouselImages.map((imageGroup, index) => (
+                    <div key={index}>
+                      <div style={{ textAlign: "left" }}>
+                        <h1
                           style={{
-                            maxWidth: "30%",
-                            borderRadius: "1px",
-                            marginTop: 10,
-                            // overflow: "hidden",
+                            fontSize: "2rem",
+                            fontWeight: "bold",
+                            marginBottom: "20px",
+                            display: "flex",
+                            backgroundColor: "rgba(0, 30, 100, 0.9)",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                          }}
+                        >
+                          <Typography.Title
+                            level={2}
+                            style={{ color: "#feffee" }}
+                          >
+                            Tour - {joinedLocationInTourDetailData.tourName}
+                            <div>
+                              <Typography.Text style={{ color: "#feffee" }}>
+                                <EnvironmentOutlined />
+                                &nbsp; Tour - Location Name - Location Address
+                              </Typography.Text>
+                              <div>
+                                <Typography.Text style={{ color: "#feffee" }}>
+                                  <ClockCircleOutlined />
+                                  &nbsp; Duration -{" "}
+                                  {joinedLocationInTourDetailData.duration}
+                                </Typography.Text>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <Typography.Text style={{ color: "#feffee" }}>
+                                  <CarOutlined />
+                                  &nbsp; Vehicle -{" "}
+                                  {vehicleLocationInTourDetailData?.vehicleName}
+                                </Typography.Text>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <Typography.Text style={{ color: "#feffee" }}>
+                                  <StarOutlined />
+                                  &nbsp; Capacity -{" "}
+                                  {vehicleLocationInTourDetailData?.capacity}
+                                </Typography.Text>
+                              </div>
+                            </div>
+                          </Typography.Title>
+                        </h1>
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            maxWidth: "100%",
+                            // border: "1px solid #ccc",
+                            borderRadius: "5px",
+                            overflow: "hidden",
                           }}
                         >
                           <Image
-                            src={imageUrl}
-                            alt={`Image ${index + 1}.${imageIndex + 1}`}
+                            src={imageGroup[0]}
+                            alt={`Image ${index + 1}`}
                             style={{
                               width: "100%",
-                              height: "200px",
+                              height: "350px",
                               objectFit: "cover",
                               boxShadow: "2px 1px 4px rgba(0,0,0,0.25)",
                             }}
                           />
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Carousel>
-          </div>
-        </div>
-        <div style={{ padding: "55px", maxWidth: "1700px", margin: "0 auto" }}>
-          <Row gutter={0}>
-            <Col span={18}>
-              <Card style={{ marginBottom: "px" }}>
-                <ul className="horizontal-list">
-                  <ul style={{ display: "flex", listStyleType: "none" }}>
-                    <li style={{ marginRight: "100px" }}>
-                      <CarTwoTone /> Transportation service:{" "}
-                      {vehicleLocationInTourDetailData?.vehicleName}
-                    </li>
-                    <li style={{ marginRight: "90px" }}>
-                      <FireTwoTone /> Tour type:{" "}
-                      {joinedLocationInTourDetailData.tourType}
-                    </li>
-                  </ul>
-                </ul>
-                <Title level={4}>Tour Information</Title>
-                <Rate disabled defaultValue={4.5} />
-                <Text> 9.2 Great | From 34 reviews </Text>
-                <br />
-                <br />
-                {locationActivitiesInTourDetailData &&
-                  locationActivitiesInTourDetailData.map((activity, i) => (
-                    <div
-                      style={{ border: "1px solid #1e1e1e", margin: "10px" }}
-                      key={i.toString()}
-                    >
-                      <div
-                        style={{
-                          width: "700px",
-                        }}
-                      >
-                        <Text
-                          strong
+                        <div
                           style={{
-                            fontSize: "16px",
-                            color: "#333",
+                            display: "flex",
+                            justifyContent: "space-around",
                           }}
                         >
-                          Activity: {activity.activityName}
-                        </Text>
-                      </div>
-                      <div className="schedule">
-                        <div className="schedule-item">
-                          <div className="time">
-                            Time: {activity.activityDuration}
-                          </div>
-                          <div>Description: {activity.activityDescription}</div>
+                          {imageGroup.slice(1).map((imageUrl, imageIndex) => (
+                            <div
+                              key={imageIndex}
+                              style={{
+                                maxWidth: "30%",
+                                borderRadius: "1px",
+                                marginTop: 10,
+                                // overflow: "hidden",
+                              }}
+                            >
+                              <Image
+                                src={imageUrl}
+                                alt={`Image ${index + 1}.${imageIndex + 1}`}
+                                style={{
+                                  width: "100%",
+                                  height: "200px",
+                                  objectFit: "cover",
+                                  boxShadow: "2px 1px 4px rgba(0,0,0,0.25)",
+                                }}
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                   ))}
-              </Card>
-            </Col>
-            <Col span={6} style={{ marginLeft: "0px" }}>
-              <div style={{ margin: "10px" }}>
-                <Card
-                  style={{
-                    flexGrow: 1,
-                    textAlign: "left",
-                    backgroundColor: "#FFF5EE",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    margin: "5px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "bold",
-                      borderColor: "#FF8C00",
-                      fontSize: "23px",
-                      color: "#cf1322",
-                      margin: "20px",
-                    }}
-                  >
-                    {tourPrice()}
-                  </span>
-                  <Button
-                    type="primary"
-                    onClick={scrollToTourSection}
-                    style={{
-                      backgroundColor: "#F4A460",
-                      borderColor: "#FF8C00",
-                      fontSize: "14px",
-                      alignSelf: "start",
-                      margin: "0px",
-                    }}
-                  >
-                    Book Now
-                  </Button>
-                </Card>
-
-                <Card
-                  style={{
-                    flexGrow: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    margin: "5px",
-                  }}
-                >
-                  <Badge.Ribbon text="Trustworthy Information" color="green">
-                    <Card.Meta
-                      title="Tour"
-                      description={
-                        <>
-                          <div>
-                            <Rate disabled defaultValue={7} />
-                            <br />
-                            <span>
-                              Top destination: Highly rated by guests (9.9
-                              points)
-                            </span>
-                          </div>
-                          <div>
-                            <Badge
-                              status="processing"
-                              text="Free private parking inside the premises"
-                            />
-                          </div>
-                        </>
-                      }
-                    />
-                  </Badge.Ribbon>
-                  <div style={{ marginTop: "16px" }}>
-                    Guests say that the description and images of this property
-                    are very accurate.
-                  </div>
-                </Card>
+                </Carousel>
               </div>
-
-              <div
-                id="floating-box"
-                style={{
-                  position: "fixed",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  zIndex: 1000,
-                  background: "white",
-                  padding: "1rem",
-                  borderRadius: "4px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  display: window.innerWidth < 992 ? "none" : "block",
-                }}
-              >
-                <div style={{ marginBottom: "1rem" }}>
-                  <strong>Customer Support</strong>
-                </div>
-                <div style={{ marginBottom: "1rem" }}>
-                  Hotline: <a href="tel:19001888">1900 1888</a>
-                </div>
-                <div style={{ marginBottom: "1rem" }}>
-                  Email:{" "}
-                  <a href="mailto:info@saigontourist.net">Hella@email.net</a>
-                </div>
-                <Button
-                  type="primary"
-                  style={{ backgroundColor: "#FF8C00", borderColor: "#FF8C00" }}
-                >
-                  Want a callback?
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </div>
-
-        <div ref={tourSectionRef}>
-          <div
-            style={{
-              padding: "55px",
-              maxWidth: "1700px",
-              marginBottom: "0px",
-              marginTop: "-90px",
-            }}
-          >
-            <Card title="Shared Tour - Departing from Phu Quoc">
-              <Row gutter={16}>
-                <Col span={24}>
-                  <Button
-                    type="primary"
-                    icon={<CalendarOutlined />}
-                    onClick={handleCalendarButtonClick}
-                    style={{
-                      marginBottom: 16,
-                      borderRadius: "8px",
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                      color: "Blue",
-                    }}
-                  >
-                    View Calendar
-                  </Button>
-                  <Modal
-                    title="Calendar"
-                    visible={isCalendarVisible}
-                    onCancel={handleCloseCalendarModal}
-                    footer={null}
-                    width={800}
-                  >
-                    <Calendar fullscreen={false} />
-                  </Modal>
-
-                  <Content style={{ padding: " px, 100px" }}>
-                    <div className="site-layout-content"></div>
-                    <div ref={tourSectionRef}>
-                      <Row gutter={16}>
-                        <Col span={24}>{dateSelector}</Col>
-                      </Row>
-
-                      <Row>
-                        <Col span={24}>
-                          {selectedDateUi && (
-                            <div
+            </div>
+            <div
+              style={{ padding: "55px", maxWidth: "1700px", margin: "0 auto" }}
+            >
+              <Row gutter={0}>
+                <Col span={18}>
+                  <Card style={{ marginBottom: "px" }}>
+                    <ul className="horizontal-list">
+                      <ul style={{ display: "flex", listStyleType: "none" }}>
+                        <li style={{ marginRight: "100px" }}>
+                          <CarTwoTone /> Transportation service:{" "}
+                          {vehicleLocationInTourDetailData?.vehicleName}
+                        </li>
+                        <li style={{ marginRight: "90px" }}>
+                          <FireTwoTone /> Tour type:{" "}
+                          {joinedLocationInTourDetailData.tourType}
+                        </li>
+                      </ul>
+                    </ul>
+                    <Title level={4}>Tour Information</Title>
+                    <Rate disabled defaultValue={4.5} />
+                    <Text> 9.2 Great | From 34 reviews </Text>
+                    <br />
+                    <br />
+                    {locationActivitiesInTourDetailData &&
+                      locationActivitiesInTourDetailData.map((activity, i) => (
+                        <div
+                          style={{
+                            border: "1px solid #1e1e1e",
+                            margin: "10px",
+                          }}
+                          key={i.toString()}
+                        >
+                          <div
+                            style={{
+                              width: "700px",
+                            }}
+                          >
+                            <Text
+                              strong
                               style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                backgroundColor: "#fff",
-                                padding: "20px",
-                                borderRadius: "5px",
-                                margin: "20px",
+                                fontSize: "16px",
+                                color: "#333",
                               }}
                             >
-                              <div style={{ maxWidth: "80%" }}>
-                                <Title
-                                  level={3}
-                                  style={{ color: "#330099", margin: 0 }}
-                                >
-                                  {tourPrice[selectedDateUi]} Shared tour for up
-                                  to 40 guests - Departure from HCMC | Vietjet
-                                  Air Flight
-                                </Title>
-                                <Text style={{ color: "#D3D3D3" }}>
-                                  Price for {selectedDateUi}
-                                </Text>
-                                <Row
-                                  gutter={16}
-                                  style={{
-                                    backgroundColor: "#fff",
-                                    padding: "24px",
-                                    borderRadius: "8px",
+                              Activity: {activity.activityName}
+                            </Text>
+                          </div>
+                          <div className="schedule">
+                            <div className="schedule-item">
+                              <div className="time">
+                                Time: {activity.activityDuration}
+                              </div>
+                              <div>
+                                Description: {activity.activityDescription}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </Card>
+                </Col>
+                <Col span={6} style={{ marginLeft: "0px" }}>
+                  <div style={{ margin: "10px" }}>
+                    <Card
+                      style={{
+                        flexGrow: 1,
+                        textAlign: "left",
+                        backgroundColor: "#FFF5EE",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        margin: "5px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          borderColor: "#FF8C00",
+                          fontSize: "23px",
+                          color: "#cf1322",
+                          margin: "20px",
+                        }}
+                      >
+                        {tourPrice()} VND
+                      </span>
+                      <Button
+                        type="primary"
+                        onClick={scrollToTourSection}
+                        style={{
+                          backgroundColor: "#F4A460",
+                          borderColor: "#FF8C00",
+                          fontSize: "14px",
+                          alignSelf: "start",
+                          margin: "0px",
+                        }}
+                      >
+                        Book Now
+                      </Button>
+                    </Card>
 
-                                    marginBottom: "20px",
+                    <Card
+                      style={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        margin: "5px",
+                      }}
+                    >
+                      <Badge.Ribbon
+                        text="Trustworthy Information"
+                        color="green"
+                      >
+                        <Card.Meta
+                          title="Tour"
+                          description={
+                            <>
+                              <div>
+                                <Rate disabled defaultValue={7} />
+                                <br />
+                                <span>
+                                  Top destination: Highly rated by guests (9.9
+                                  points)
+                                </span>
+                              </div>
+                              <div>
+                                <Badge
+                                  status="processing"
+                                  text="Free private parking inside the premises"
+                                />
+                              </div>
+                            </>
+                          }
+                        />
+                      </Badge.Ribbon>
+                      <div style={{ marginTop: "16px" }}>
+                        Guests say that the description and images of this
+                        property are very accurate.
+                      </div>
+                    </Card>
+                  </div>
+
+                  <div
+                    id="floating-box"
+                    style={{
+                      position: "fixed",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 1000,
+                      background: "white",
+                      padding: "1rem",
+                      borderRadius: "4px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                      display: window.innerWidth < 992 ? "none" : "block",
+                    }}
+                  >
+                    <div style={{ marginBottom: "1rem" }}>
+                      <strong>Customer Support</strong>
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      Hotline: <a href="tel:19001888">1900 1888</a>
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      Email:{" "}
+                      <a href="mailto:info@saigontourist.net">
+                        Hella@email.net
+                      </a>
+                    </div>
+                    <Button
+                      type="primary"
+                      style={{
+                        backgroundColor: "#FF8C00",
+                        borderColor: "#FF8C00",
+                      }}
+                    >
+                      Want a callback?
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            <div ref={tourSectionRef}>
+              <div
+                style={{
+                  padding: "55px",
+                  maxWidth: "1700px",
+                  marginBottom: "0px",
+                  marginTop: "-90px",
+                }}
+              >
+                <Card title="Shared Tour - Departing from Phu Quoc">
+                  <Row gutter={16}>
+                    <Col span={24}>
+                      <Button
+                        type="primary"
+                        icon={<CalendarOutlined />}
+                        onClick={handleCalendarButtonClick}
+                        style={{
+                          marginBottom: 16,
+                          borderRadius: "8px",
+                          fontWeight: "bold",
+                          fontSize: "16px",
+                          color: "Blue",
+                        }}
+                      >
+                        View Calendar
+                      </Button>
+                      <Modal
+                        title="Calendar"
+                        visible={isCalendarVisible}
+                        onCancel={handleCloseCalendarModal}
+                        footer={null}
+                        width={800}
+                      >
+                        <Calendar fullscreen={false} />
+                      </Modal>
+
+                      <Content style={{ padding: " px, 100px" }}>
+                        <div className="site-layout-content"></div>
+                        <div ref={tourSectionRef}>
+                          <Row gutter={16}>
+                            <Col span={24}>{dateSelector}</Col>
+                          </Row>
+
+                          <Row>
+                            <Col span={24}>
+                              {selectedDateUi && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    backgroundColor: "#fff",
+                                    padding: "20px",
+                                    borderRadius: "5px",
+                                    margin: "20px",
                                   }}
                                 >
-                                  <Col span={24}>
-                                    <Form
-                                      onFinish={handleFinish}
-                                      initialValues={{ totalCustomer: 1 }}
+                                  <div style={{ maxWidth: "80%" }}>
+                                    <Title
+                                      level={3}
+                                      style={{ color: "#330099", margin: 0 }}
                                     >
-                                      <div style={{ marginBottom: "16px" }}>
-                                        <Form.Item level={4}>Adults</Form.Item>
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "baseline",
-                                            marginBottom: "9px",
-                                          }}
+                                      {tourPrice[selectedDateUi]} Shared tour
+                                      for up to 40 guests - Departure from HCMC
+                                      | Vietjet Air Flight
+                                    </Title>
+                                    <Text style={{ color: "#D3D3D3" }}>
+                                      Price for {selectedDateUi}
+                                    </Text>
+                                    <Row
+                                      gutter={16}
+                                      style={{
+                                        backgroundColor: "#fff",
+                                        padding: "24px",
+                                        borderRadius: "8px",
+
+                                        marginBottom: "20px",
+                                      }}
+                                    >
+                                      <Col span={24}>
+                                        <Form
+                                          onFinish={handleFinish}
+                                          initialValues={{ totalCustomer: 1 }}
                                         >
-                                          <Form.Item
+                                          <div style={{ marginBottom: "16px" }}>
+                                            <Form.Item level={4}>
+                                              Adults
+                                            </Form.Item>
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "baseline",
+                                                marginBottom: "9px",
+                                              }}
+                                            >
+                                              <Form.Item
+                                                style={{
+                                                  fontSize: "12px",
+                                                  color: "#B0B0B0",
+                                                  fontWeight: "500",
+                                                }}
+                                              >
+                                                {
+                                                  joinedLocationInTourDetailData.price
+                                                }{" "}
+                                                VND/person
+                                              </Form.Item>
+                                            </div>
+                                            <Form.Item name="totalCustomer">
+                                              <InputNumber
+                                                min={1}
+                                                max={
+                                                  vehicleLocationInTourDetailData?.capacity
+                                                }
+                                                onChange={setAdultCount}
+                                                defaultValue={1}
+                                              />
+                                            </Form.Item>
+                                          </div>
+                                          <Text
                                             style={{
-                                              fontSize: "12px",
-                                              color: "#B0B0B0",
+                                              fontSize: "16px",
+                                              color: "#333",
                                               fontWeight: "500",
                                             }}
                                           >
-                                            {joinedLocationInTourDetailData.price *
-                                              1000}{" "}
-                                            VND/person
-                                          </Form.Item>
-                                        </div>
-                                        <Form.Item name="totalCustomer">
-                                          <InputNumber
-                                            min={1}
-                                            max={40}
-                                            onChange={setAdultCount}
-                                            defaultValue={1}
-                                          />
-                                        </Form.Item>
-                                      </div>
-                                      <Text
-                                        style={{
-                                          fontSize: "16px",
-                                          color: "#333",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        Tour Guide
-                                      </Text>
-                                      <Form.Item
-                                        name="tourGuide"
-                                        rules={[
-                                          {
-                                            required: true,
-                                          },
-                                        ]}
-                                      >
-                                        <Select
-                                          // name={tourGuide.userId.fullName}
-                                          placeholder="Please select your tourguide"
-                                        >
-                                          {tourGuidesData.map((tourGuide) => (
-                                            <Select.Option
-                                              key={tourGuide._id}
-                                              value={tourGuide._id}
+                                            <KeyOutlined /> &nbsp; Tour Guide
+                                          </Text>
+                                          <Form.Item
+                                            name="tourGuide"
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message:
+                                                  "Select your Tour Guide first!",
+                                              },
+                                            ]}
+                                          >
+                                            <Select
+                                              // name={tourGuide.userId.fullName}
+                                              placeholder="Please select your Tour Guide"
                                             >
-                                              {tourGuide.userId?.fullName}
-                                            </Select.Option>
-                                          ))}
-                                        </Select>
-                                      </Form.Item>
+                                              {tourGuidesData.map(
+                                                (tourGuide) =>
+                                                  tourGuide.userId.status ===
+                                                    true && (
+                                                    <Select.Option
+                                                      key={tourGuide._id}
+                                                      value={tourGuide._id}
+                                                    >
+                                                      {
+                                                        tourGuide.userId
+                                                          ?.fullName
+                                                      }
+                                                    </Select.Option>
+                                                  )
+                                              )}
+                                            </Select>
+                                          </Form.Item>
 
-                                      <div
-                                        style={{
-                                          borderTop: "1px solid #e8e8e8",
-                                          paddingTop: "24px",
-                                          marginTop: "24px",
-                                        }}
-                                      >
-                                        <Form.Item level={4}>
-                                          Total Price
-                                        </Form.Item>
-                                        <Form.Item
-                                          name="totalPrice"
-                                          style={{
-                                            fontSize: "20px",
-                                            color: "#cf1322",
-                                            fontWeight: "600",
-                                          }}
-                                        >
-                                          {getTotalPrice()}
-                                        </Form.Item>
-                                      </div>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          flexDirection: "column",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Button
-                                          type="primary"
-                                          className="booking-button"
-                                          style={{
-                                            backgroundColor: "#FF8C00",
-                                            marginTop: "10px",
-                                          }}
-                                          htmlType="submit"
-                                        >
-                                          Book Tour Now
-                                        </Button>
-                                      </div>
-                                    </Form>
-                                  </Col>
-                                </Row>
-                              </div>
-                            </div>
-                          )}
-                        </Col>
-                      </Row>
-                    </div>
-                  </Content>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        </div>
-      </Content>
-      <Footer style={{ textAlign: "center" }}>©2024 by Travel Agency</Footer>
+                                          <div
+                                            style={{
+                                              borderTop: "1px solid #e8e8e8",
+                                              paddingTop: "24px",
+                                              marginTop: "24px",
+                                            }}
+                                          >
+                                            <Form.Item level={4}>
+                                              Total Price
+                                            </Form.Item>
+                                            <Form.Item
+                                              name="totalPrice"
+                                              style={{
+                                                fontSize: "20px",
+                                                color: "#cf1322",
+                                                fontWeight: "600",
+                                              }}
+                                            >
+                                              {getTotalPrice()}
+                                            </Form.Item>
+                                          </div>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              flexDirection: "column",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <Button
+                                              type="primary"
+                                              className="booking-button"
+                                              style={{
+                                                backgroundColor: "#FF8C00",
+                                                marginTop: "10px",
+                                              }}
+                                              htmlType="submit"
+                                              onClick={() => {
+                                                !userData && navigate("/login");
+                                                toast.error(
+                                                  "Your must login first!"
+                                                );
+                                              }}
+                                            >
+                                              {loading ? (
+                                                <Spin
+                                                  indicator={
+                                                    <LoadingOutlined
+                                                      style={{ fontSize: 24 }}
+                                                    />
+                                                  }
+                                                />
+                                              ) : (
+                                                "Book Tour Now"
+                                              )}
+                                            </Button>
+                                          </div>
+                                        </Form>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                </div>
+                              )}
+                            </Col>
+                          </Row>
+                        </div>
+                      </Content>
+                    </Col>
+                  </Row>
+                </Card>
+              </div>
+            </div>
+          </Content>
+          <Footer />
+        </>
+      )}
     </Layout>
   );
 };
