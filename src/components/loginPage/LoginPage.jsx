@@ -42,7 +42,7 @@ import { createGlobalStyle } from "antd-style";
 import Navbar from "../navbar/Navbar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import LoginGoogle from "../../googleSignIn/loginGoogle";
+import LoginGoogle from "../../googleSignIn/LoginGoogle";
 
 const iconStyles = {
   color: "rgba(0, 0, 0, 0.2)",
