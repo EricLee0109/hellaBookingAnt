@@ -28,7 +28,7 @@ function App() {
       navigate("/");
       toast.info("You are already logged in");
     }
-  }, [navigate]);
+  }, [authUserGoogle, authUser]);
   return (
     <AuthContextProvider>
       <ToastContainer />
