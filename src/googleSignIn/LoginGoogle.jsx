@@ -7,10 +7,12 @@ import { theme } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { verifyTokenGoogle } from "../helper/LoginAPI";
+import { useNavigate } from "react-router-dom";
 
 function LoginGoogle() {
   const { token } = theme.useToken();
   const [user, setUser] = useState("");
+  const navigate = useNavigate();
 
   const iconStyles = {
     color: "rgba(0, 0, 0, 0.2)",
@@ -33,6 +35,7 @@ function LoginGoogle() {
         localStorage.setItem("userAccessToken", user.accessToken);
         localStorage.setItem("userEmail", user.email);
         localStorage.setItem("userName", user.displayName);
+        navigate("/");
       })
       .catch((err) => {
         // Handle Errors here.
